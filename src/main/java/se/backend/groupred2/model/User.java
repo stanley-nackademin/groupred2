@@ -1,13 +1,17 @@
 package se.backend.groupred2.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
+import javax.persistence.*;
 
 @Entity
-public class User {
+public final class User {
 
     @GeneratedValue
     private Long id;
 
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
 
 }
