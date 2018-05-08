@@ -12,5 +12,5 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
 @Path("")
-public final class WorkItemResource {
+public final class TaskResource {
 }
