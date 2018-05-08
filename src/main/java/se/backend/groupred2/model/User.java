@@ -26,6 +26,14 @@ public final class User {
 
     protected User(){}
 
+    public User(String firstName, String lastName, String userName, boolean active, Long userNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.active = active;
+        this.userNumber = userNumber;
+    }
+
     public User(String firstName, String lastName, String userName, boolean active, Long userNumber, Team team) {
         this.firstName = firstName;
         this.lastName = lastName;
