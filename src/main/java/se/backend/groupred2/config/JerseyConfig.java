@@ -7,14 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class JerseyConfig extends ResourceConfig{
+public class JerseyConfig extends ResourceConfig {
 
-    public JerseyConfig(){
+    public JerseyConfig() {
         packages("se.backend.groupred2.resource");
     }
 
     @Bean
-    public ObjectMapper objectMapper (){
+    public ObjectMapper objectMapper() {
         return new ObjectMapper().registerModule(new ParameterNamesModule());
     }
 }

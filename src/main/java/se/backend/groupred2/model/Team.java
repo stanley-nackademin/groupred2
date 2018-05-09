@@ -1,9 +1,7 @@
 package se.backend.groupred2.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 public final class Team {
@@ -15,12 +13,17 @@ public final class Team {
     @Column(nullable = false)
     private String name;
     private boolean active;
+    @OneToMany(mappedBy = "team")
+    private Collection<User> user;
 
-    protected Team(){}
+    protected Team() {
+    }
+
 
     public Team(String name, boolean active) {
         this.name = name;
         this.active = active;
+
     }
 
     public Long getId() {
@@ -35,5 +38,8 @@ public final class Team {
         return active;
     }
 
+    public Collection<User> getUser() {
+        return user;
+    }
     //TODO activate or deactivate a team ?
 }

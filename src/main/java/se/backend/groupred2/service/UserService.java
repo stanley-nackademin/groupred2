@@ -13,10 +13,11 @@ public final class UserService {
         this.repository = repository;
     }
 
-    public User createUser(User user){
+    public User createUser(User user) {
         //validate(user);
         return repository.save(new User(user.getFirstName(), user.getLastName(),
-                user.getUserName(), user.isActive(), user.getUserNumber(), user.getTeam()));
+                user.getUserName(), user.isActive(), user.getUserNumber()));
+
 
         // ska vi göra en klass som tar hand om hur man skapar nya users/tasks/teams? blir så lång kod annars.
     }
