@@ -8,7 +8,15 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
 import javax.ws.rs.core.Response;
+
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import java.net.URI;
+
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.Status.CREATED;
@@ -16,8 +24,6 @@ import static javax.ws.rs.core.Response.Status.CREATED;
 @Component
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
-
-
 @Path("users")
 public final class UserResource {
 
@@ -29,6 +35,7 @@ public final class UserResource {
 
     @POST
     public Response createUser(User user) {
+
         User result = service.createUser(user);
         return Response.status(CREATED).header("Location", "Users/" + result.getId()).build();
     }
@@ -56,4 +63,6 @@ public final class UserResource {
 //                .build();
 //    }
 
+
+  
 }

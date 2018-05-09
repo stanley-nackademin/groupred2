@@ -28,13 +28,14 @@ public final class User {
     }
 
     public User(String firstName, String lastName, String userName, boolean active, Long userNumber) {
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
         this.active = active;
         this.userNumber = userNumber;
-
     }
+
 
     public Long getId() {
         return id;

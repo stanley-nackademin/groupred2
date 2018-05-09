@@ -18,6 +18,7 @@ import static javax.ws.rs.core.Response.Status.CREATED;
 @Produces(APPLICATION_JSON)
 @Path("tasks")
 public final class TaskResource {
+
     private final TaskService service;
 
     public TaskResource(TaskService service) {
@@ -29,6 +30,7 @@ public final class TaskResource {
         Task result = service.createTask(task);
         return Response.status(CREATED).header("Location", "Tasks/" + result.getId()).build();
     }
+
 }
 
 

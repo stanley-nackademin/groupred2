@@ -13,6 +13,7 @@ public final class TeamService {
         this.repository = repository;
     }
 
+
     public Team createTeam(Team team) {
         //validate(user);
         return repository.save(new Team(team.getName(), team.isActive()
@@ -20,6 +21,6 @@ public final class TeamService {
 
 
         // ska vi göra en klass som tar hand om hur man skapar nya users/tasks/teams? blir så lång kod annars.
-    }
+
 }
 

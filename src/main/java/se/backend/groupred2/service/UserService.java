@@ -18,7 +18,6 @@ public final class UserService {
         return repository.save(new User(user.getFirstName(), user.getLastName(),
                 user.getUserName(), user.isActive(), user.getUserNumber()));
 
-
         // ska vi göra en klass som tar hand om hur man skapar nya users/tasks/teams? blir så lång kod annars.
     }
 }
