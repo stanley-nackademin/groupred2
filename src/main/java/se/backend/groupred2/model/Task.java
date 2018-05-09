@@ -10,7 +10,7 @@ public final class Task {
     private Long id;
 
     @Column(nullable = false)
-    private String name, text;
+    private String title, text;
 
     @Column
     @Enumerated
@@ -24,19 +24,19 @@ public final class Task {
     protected Task() {
     }
 
-    public Task(String name, String text, TaskStatus status, User user) {
-        this.name = name;
+    public Task(String title, String text, TaskStatus status) {
+        this.title = title;
         this.text = text;
         this.status = status;
-        this.user = user;
+
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public String getText() {

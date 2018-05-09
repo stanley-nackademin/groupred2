@@ -24,9 +24,11 @@ public final class User {
     @OneToMany(mappedBy = "user")
     private Collection<Task> tasks;
 
-    protected User(){}
+    protected User() {
+    }
 
     public User(String firstName, String lastName, String userName, boolean active, Long userNumber) {
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
@@ -34,14 +36,6 @@ public final class User {
         this.userNumber = userNumber;
     }
 
-    public User(String firstName, String lastName, String userName, boolean active, Long userNumber, Team team) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.active = active;
-        this.userNumber = userNumber;
-        this.team = team;
-    }
 
     public Long getId() {
         return id;

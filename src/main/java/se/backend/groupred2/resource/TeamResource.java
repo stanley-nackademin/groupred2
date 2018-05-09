@@ -8,22 +8,21 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
+import javax.ws.rs.core.Response;
+
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import java.net.URI;
-
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.Response.Status.CREATED;
 
 @Component
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
 @Path("teams")
 public final class TeamResource {
-
-    @Context
-    private UriInfo uriInfo;
 
     private final TeamService service;
 
@@ -33,12 +32,10 @@ public final class TeamResource {
 
     @POST
     public Response createTeam(Team team) {
-        Team temp = service.createTeam(team);
 
-        return Response.created(URI.create(uriInfo
-                .getAbsolutePathBuilder()
-                .path(temp.getId().toString())
-                .toString()))
-                .build();
+        Team result = service.createTeam(team);
+        return Response.status(CREATED).header("Location", "Teams/" + result.getId()).build();
     }
+
 }
+
