@@ -1,6 +1,7 @@
 package se.backend.groupred2.model;
 
 import javax.persistence.*;
+import javax.ws.rs.DefaultValue;
 import java.util.Collection;
 
 @Entity
@@ -12,9 +13,11 @@ public final class Team {
 
     @Column(nullable = false)
     private String name;
+
+    //sätt team som inactive som default?
     private boolean active;
-    @OneToMany(mappedBy = "team")
-    private Collection<User> user;
+    //@OneToMany(mappedBy = "team")
+    //private Collection<User> users;
 
     protected Team() {
     }
@@ -22,8 +25,7 @@ public final class Team {
 
     public Team(String name, boolean active) {
         this.name = name;
-        this.active = active;
-
+        this.setActive(active);
     }
 
     public Long getId() {
@@ -34,12 +36,15 @@ public final class Team {
         return name;
     }
 
+    //public Collection<User> getUsers() {
+    //    return users;
+    //}
+
     public boolean isActive() {
         return active;
     }
 
-    public Collection<User> getUser() {
-        return user;
+    public void setActive(boolean active) {
+        this.active = active;
     }
-    //TODO activate or deactivate a team ?
 }
