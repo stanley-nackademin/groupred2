@@ -5,22 +5,16 @@ import se.backend.groupred2.model.Team;
 import se.backend.groupred2.service.TeamService;
 
 import javax.ws.rs.*;
-
 import javax.ws.rs.core.Response;
-
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.*;
 
 @Component
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
-@Path("team")
+@Path("teams")
 public final class TeamResource {
-
     private final TeamService service;
 
     public TeamResource(TeamService service) {
@@ -31,19 +25,20 @@ public final class TeamResource {
     public Response getAllTeams() {
         return  Response.ok(service.getAllTeams()).build();
     }
+
     @POST
     public Response createTeam(Team team) {
 
         Team result = service.createTeam(team);
-        return Response.status(CREATED).header("Location", "Teams/" + result.getId()).build();
+        return Response.status(CREATED).header("Location", "Team/" + result.getId()).build();
     }
 
     @PUT
-    @Path("{id}")
-    public Response addUserToTeam(@QueryParam("teamId")) {
-        return null;
+    public Response addUserToTeam(@QueryParam("id") Long teamId, @QueryParam("userId") Long userId) {
+        return service.addUserToTeam(userId, teamId)
+                .map(u -> Response.status(OK))
+                .orElse(Response.status((NOT_FOUND)))
+                .build();
     }
-
-
 }
 
