@@ -4,38 +4,41 @@ import org.springframework.stereotype.Component;
 import se.backend.groupred2.model.Team;
 import se.backend.groupred2.service.TeamService;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.*;
 
 @Component
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
 @Path("teams")
 public final class TeamResource {
-
     private final TeamService service;
 
     public TeamResource(TeamService service) {
         this.service = service;
     }
 
+    @GET
+    public Response getAllTeams() {
+        return  Response.ok(service.getAllTeams()).build();
+    }
+
     @POST
     public Response createTeam(Team team) {
 
         Team result = service.createTeam(team);
-        return Response.status(CREATED).header("Location", "Teams/" + result.getId()).build();
+        return Response.status(CREATED).header("Location", "Team/" + result.getId()).build();
     }
 
+    @PUT
+    public Response addUserToTeam(@QueryParam("id") Long teamId, @QueryParam("userId") Long userId) {
+        return service.addUserToTeam(userId, teamId)
+                .map(u -> Response.status(OK))
+                .orElse(Response.status((NOT_FOUND)))
+                .build();
+    }
 }
 

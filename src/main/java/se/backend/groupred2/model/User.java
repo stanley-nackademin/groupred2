@@ -61,12 +61,18 @@ public final class User {
         return userNumber;
     }
 
+
+
+    public Collection<Task> getTasks() {
+        return tasks;
+    }
+
     public Team getTeam() {
         return team;
     }
 
-    public Collection<Task> getTasks() {
-        return tasks;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     //TODO add task / remove task / toString ?

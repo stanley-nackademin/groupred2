@@ -1,6 +1,9 @@
 package se.backend.groupred2.model;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.persistence.*;
+import javax.ws.rs.DefaultValue;
 import java.util.Collection;
 
 @Entity
@@ -12,18 +15,21 @@ public final class Team {
 
     @Column(nullable = false)
     private String name;
+
+    //sätt team inactive som default?
     private boolean active;
-    @OneToMany(mappedBy = "team")
-    private Collection<User> user;
+
+    //lättare om man någon gång i framtiden vill utöka antal users i ett team
+    @Column(nullable = false)
+    private int maxUsers;
 
     protected Team() {
     }
 
-
-    public Team(String name, boolean active) {
+    public Team(String name, boolean active, int maxUsers) {
         this.name = name;
-        this.active = active;
-
+        this.setActive(active);
+        this.maxUsers = maxUsers;
     }
 
     public Long getId() {
@@ -38,8 +44,15 @@ public final class Team {
         return active;
     }
 
-    public Collection<User> getUser() {
-        return user;
+    public void setActive(boolean active) {
+        this.active = active;
     }
-    //TODO activate or deactivate a team ?
+
+    public int getMaxUsers() {
+        return maxUsers;
+    }
+
+    public void setMaxUsers(int maxUsers) {
+        this.maxUsers = maxUsers;
+    }
 }
