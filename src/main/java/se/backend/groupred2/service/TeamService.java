@@ -1,6 +1,7 @@
 package se.backend.groupred2.service;
 
 import org.springframework.stereotype.Service;
+
 import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
@@ -34,19 +35,12 @@ public final class TeamService {
         return result;
     }
 
-    public Team setStatus(Team team, boolean active) {
+    public Optional<Team> updateStatus(Long teamId, boolean active) {
+        Optional<Team> result = teamRepository.findById(teamId);
 
-        team.setActive(active);
+        result.ifPresent(team -> team.setActive(active));
 
-        return teamRepository.save(team);
-    }
-
-    private Optional<Team> getTeam(Long id) {
-        return teamRepository.findById(id);
-    }
-
-    private Optional<User> getUser(Long id) {
-        return userRepository.findById(id);
+        return result;
     }
 
     public Iterable<Team> getAllTeams() {
@@ -54,15 +48,17 @@ public final class TeamService {
     }
 
     public Optional<User> addUserToTeam(Long userId, Long teamId) {
-        Optional<Team> teamResult = getTeam(teamId);
-        Optional<User> userResult = getUser(userId);
+        Optional<Team> teamResult = teamRepository.findById(teamId);
+        Optional<User> userResult = userRepository.findById(userId);
 
         if (teamResult.isPresent() && userResult.isPresent()) {
-            validate(teamResult.get());
+            User user = userResult.get();
+            Team team = teamResult.get();
 
-            userResult.get().setTeam(teamResult.get());
+            validate(team);
+            user.setTeam(team);
 
-            userRepository.save(userResult.get());
+            userRepository.save(user);
         }
 
         return userResult;
@@ -73,5 +69,7 @@ public final class TeamService {
             throw new FullTeamExcepetion("Can't add user. Team is full");
         }
     }
+
+
 }
 

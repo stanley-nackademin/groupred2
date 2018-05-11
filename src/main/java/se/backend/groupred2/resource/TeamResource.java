@@ -13,7 +13,7 @@ import static javax.ws.rs.core.Response.Status.*;
 @Component
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
-@Path("teams")
+@Path("team")
 public final class TeamResource {
     private final TeamService service;
 
@@ -23,21 +23,40 @@ public final class TeamResource {
 
     @GET
     public Response getAllTeams() {
-        return  Response.ok(service.getAllTeams()).build();
+        return Response.ok(service.getAllTeams()).build();
     }
 
     @POST
     public Response createTeam(Team team) {
-
         Team result = service.createTeam(team);
+
         return Response.status(CREATED).header("Location", "Team/" + result.getId()).build();
     }
 
     @PUT
-    public Response addUserToTeam(@QueryParam("id") Long teamId, @QueryParam("userId") Long userId) {
+    public Response addUser(@QueryParam("id") Long teamId,
+                            @QueryParam("userId") Long userId) {
         return service.addUserToTeam(userId, teamId)
                 .map(u -> Response.status(OK))
                 .orElse(Response.status((NOT_FOUND)))
+                .build();
+    }
+
+    @PUT
+    public Response updateName(@QueryParam("id") Long teamId,
+                               @QueryParam("updateName") String name) {
+        return service.changeName(teamId, name)
+                .map(team -> Response.status(OK))
+                .orElse(Response.status(NOT_FOUND))
+                .build();
+    }
+
+    @PUT
+    public Response updateStatus(@QueryParam("id") Long teamId,
+                                 @QueryParam("isActive") boolean isActive) {
+        return service.updateStatus(teamId, isActive)
+                .map(team -> Response.status(OK))
+                .orElse(Response.status(NOT_FOUND))
                 .build();
     }
 }
