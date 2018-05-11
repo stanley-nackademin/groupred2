@@ -55,4 +55,8 @@ public final class Team {
     public void setMaxUsers(int maxUsers) {
         this.maxUsers = maxUsers;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

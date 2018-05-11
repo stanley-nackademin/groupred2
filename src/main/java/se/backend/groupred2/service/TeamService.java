@@ -5,7 +5,7 @@ import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
-import se.backend.groupred2.service.mapper.FullTeamExcepetion;
+import se.backend.groupred2.resource.mapper.FullTeamExcepetion;
 
 import java.util.Optional;
 
@@ -19,10 +19,19 @@ public final class TeamService {
         this.userRepository = userRepository;
     }
 
-
     public Team createTeam(Team team) {
-        //validate(user);
         return teamRepository.save(new Team(team.getName(), team.isActive(), team.getMaxUsers()));
+    }
+
+    public Optional<Team> changeName(Long teamId, String name) {
+        Optional<Team> result = teamRepository.findById(teamId);
+
+        result.ifPresent(team -> {
+            team.setName(name);
+            teamRepository.save(team);
+        });
+
+        return result;
     }
 
     public Team setStatus(Team team, boolean active) {

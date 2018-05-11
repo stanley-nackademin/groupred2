@@ -4,10 +4,7 @@ import org.springframework.stereotype.Component;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.service.UserService;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 import javax.ws.rs.core.Response;
 
@@ -31,6 +28,11 @@ public final class UserResource {
 
     public UserResource(UserService service) {
         this.service = service;
+    }
+
+    @GET
+    public Response getAllUsers() {
+            return  Response.ok(service.getAllUsers()).build();
     }
 
     @POST

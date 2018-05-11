@@ -13,6 +13,10 @@ public final class UserService {
         this.repository = repository;
     }
 
+    public Iterable<User> getAllUsers() {
+        return repository.findAll();
+    }
+
     public User createUser(User user) {
         //validate(user);
         return repository.save(new User(user.getFirstName(), user.getLastName(),
