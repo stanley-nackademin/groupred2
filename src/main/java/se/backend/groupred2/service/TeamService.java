@@ -26,12 +26,6 @@ public final class TeamService {
         return teamRepository.save(team);
     }
 
-    @RequestMapping(method = RequestMethod.PATCH)
-    public Team updateTeam(Team team) {
-
-        return teamRepository.save(team);
-    }
-
     public Optional<Team> changeName(Long teamId, String name) {
         Optional<Team> result = teamRepository.findById(teamId);
 

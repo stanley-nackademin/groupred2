@@ -43,14 +43,6 @@ public final class TeamResource {
                 .build();
     }
 
-    //todo måste testa
-    @PATCH
-    public Response update(@QueryParam("teamId") Long teamId, Team team) {
-        Team result = service.updateTeam(team);
-
-        return Response.status(ACCEPTED).header("Location", "Team/" + result.getId()).build();
-    }
-
     @PUT
     @Path("changeName")
     public Response updateName(@QueryParam("id") Long teamId,
