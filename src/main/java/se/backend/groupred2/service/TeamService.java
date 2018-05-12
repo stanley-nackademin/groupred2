@@ -2,6 +2,8 @@ package se.backend.groupred2.service;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
@@ -21,7 +23,13 @@ public final class TeamService {
     }
 
     public Team createTeam(Team team) {
-        return teamRepository.save(new Team(team.getName(), team.isActive(), team.getMaxUsers()));
+        return teamRepository.save(team);
+    }
+
+    @RequestMapping(method = RequestMethod.PATCH)
+    public Team updateTeam(Team team) {
+
+        return teamRepository.save(team);
     }
 
     public Optional<Team> changeName(Long teamId, String name) {
