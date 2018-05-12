@@ -34,7 +34,8 @@ public final class TeamResource {
     }
 
     @PUT
-    public Response addUser(@QueryParam("id") Long teamId,
+    @Path("adduser")
+    public Response addUser(@QueryParam("teamId") Long teamId,
                             @QueryParam("userId") Long userId) {
         return service.addUserToTeam(userId, teamId)
                 .map(u -> Response.status(OK))
@@ -51,6 +52,7 @@ public final class TeamResource {
     }
 
     @PUT
+    @Path("changeName")
     public Response updateName(@QueryParam("id") Long teamId,
                                @QueryParam("updateName") String name) {
         return service.changeName(teamId, name)
@@ -60,6 +62,7 @@ public final class TeamResource {
     }
 
     @PUT
+    @Path("updateStatus")
     public Response updateStatus(@QueryParam("id") Long teamId,
                                  @QueryParam("isActive") boolean isActive) {
         return service.updateStatus(teamId, isActive)
