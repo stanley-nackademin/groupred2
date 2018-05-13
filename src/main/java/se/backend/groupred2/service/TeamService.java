@@ -2,8 +2,6 @@ package se.backend.groupred2.service;
 
 import org.springframework.stereotype.Service;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
@@ -26,21 +24,21 @@ public final class TeamService {
         return teamRepository.save(team);
     }
 
-    public Optional<Team> changeName(Long teamId, String name) {
+    public Optional<Team> deActivate(Long teamId) {
         Optional<Team> result = teamRepository.findById(teamId);
 
-        result.ifPresent(team -> {
-            team.setName(name);
-            teamRepository.save(team);
-        });
+        result.ifPresent(Team::deActivate);
 
         return result;
     }
 
-    public Optional<Team> updateStatus(Long teamId, boolean active) {
-        Optional<Team> result = teamRepository.findById(teamId);
+    public Optional<Team> update(Team team) {
+        Optional<Team> result = teamRepository.findById(team.getId());
 
-        result.ifPresent(team -> team.setActive(active));
+        result.ifPresent(t -> {
+            t.setName(team.getName());
+            teamRepository.save(result.get());
+        });
 
         return result;
     }
@@ -49,13 +47,13 @@ public final class TeamService {
         return teamRepository.findAll();
     }
 
-    public Optional<User> addUserToTeam(Long userId, Long teamId) {
-        Optional<Team> teamResult = teamRepository.findById(teamId);
-        Optional<User> userResult = userRepository.findById(userId);
+    public Optional<User> addUser(User user, Team team) {
+        Optional<Team> teamResult = teamRepository.findById(team.getId());
+        Optional<User> userResult = userRepository.findById(user.getId());
 
         if (teamResult.isPresent() && userResult.isPresent()) {
-            User user = userResult.get();
-            Team team = teamResult.get();
+            user = userResult.get();
+            team = teamResult.get();
 
             validate(team);
             user.setTeam(team);
@@ -71,7 +69,5 @@ public final class TeamService {
             throw new FullTeamExcepetion("Can't add user. Team is full");
         }
     }
-
-
 }
 

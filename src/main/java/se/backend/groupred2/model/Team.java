@@ -28,7 +28,7 @@ public final class Team {
 
     public Team(String name, boolean active, int maxUsers) {
         this.name = name;
-        this.setActive(active);
+        this.active = active;
         this.maxUsers = maxUsers;
     }
 
@@ -40,12 +40,8 @@ public final class Team {
         return name;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
+    public void deActivate() {
+        this.active = false;
     }
 
     public int getMaxUsers() {

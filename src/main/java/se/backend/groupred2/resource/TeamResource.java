@@ -2,6 +2,7 @@ package se.backend.groupred2.resource;
 
 import org.springframework.stereotype.Component;
 import se.backend.groupred2.model.Team;
+import se.backend.groupred2.model.User;
 import se.backend.groupred2.service.TeamService;
 
 import javax.ws.rs.*;
@@ -34,30 +35,32 @@ public final class TeamResource {
     }
 
     @PUT
-    @Path("adduser")
-    public Response addUser(@QueryParam("teamId") Long teamId,
-                            @QueryParam("userId") Long userId) {
-        return service.addUserToTeam(userId, teamId)
+    @Path("addUser")
+    public Response addUser(Team team, User user) {
+
+        return service.addUser(user, team)
                 .map(u -> Response.status(OK))
                 .orElse(Response.status((NOT_FOUND)))
                 .build();
     }
 
+    // team/update?id=1
     @PUT
-    @Path("changeName")
-    public Response updateName(@QueryParam("id") Long teamId,
-                               @QueryParam("updateName") String name) {
-        return service.changeName(teamId, name)
-                .map(team -> Response.status(OK))
+    @Path("update")
+    public Response update(@QueryParam("id") Long teamId, Team team) {
+
+        return service.update(team)
+                .map(t -> Response.status(OK))
                 .orElse(Response.status(NOT_FOUND))
                 .build();
     }
 
+    // team/deActivate?id=1
     @PUT
-    @Path("updateStatus")
-    public Response updateStatus(@QueryParam("id") Long teamId,
-                                 @QueryParam("isActive") boolean isActive) {
-        return service.updateStatus(teamId, isActive)
+    @Path("deActivate")
+    public Response updateStatus(@QueryParam("id") Long teamId) {
+
+        return service.deActivate(teamId)
                 .map(team -> Response.status(OK))
                 .orElse(Response.status(NOT_FOUND))
                 .build();
