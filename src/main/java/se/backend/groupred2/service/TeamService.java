@@ -16,11 +16,11 @@ public final class TeamService {
 
     public Team createTeam(Team team) {
         //validate(user);
-        return repository.save(new Team(team.getName(), team.isActive()
-        ));
+        return repository.save(new Team(team.getName(), team.isActive()));
 
 
         // ska vi göra en klass som tar hand om hur man skapar nya users/tasks/teams? blir så lång kod annars.
 
+    }
 }
 
