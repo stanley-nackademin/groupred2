@@ -34,11 +34,12 @@ public final class TeamResource {
         return Response.status(CREATED).header("Location", "Team/" + result.getId()).build();
     }
 
+    // team/1/adduser
     @PUT
-    @Path("addUser")
-    public Response addUser(Team team, User user) {
+    @Path("{id}/adduser")
+    public Response addUser(@PathParam("id") Long teamId, User user) {
 
-        return service.addUser(user, team)
+        return service.addUser(teamId, user)
                 .map(u -> Response.status(OK))
                 .orElse(Response.status((NOT_FOUND)))
                 .build();
@@ -55,13 +56,13 @@ public final class TeamResource {
                 .build();
     }
 
-    // team/deActivate?id=1
+    // team/deActivate
     @PUT
-    @Path("deActivate")
-    public Response updateStatus(@QueryParam("id") Long teamId) {
+    @Path("deactivate")
+    public Response deActivate(Team team) {
 
-        return service.deActivate(teamId)
-                .map(team -> Response.status(OK))
+        return service.deActivate(team)
+                .map(t -> Response.status(OK))
                 .orElse(Response.status(NOT_FOUND))
                 .build();
     }

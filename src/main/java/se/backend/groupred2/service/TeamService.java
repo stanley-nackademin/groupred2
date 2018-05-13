@@ -24,10 +24,13 @@ public final class TeamService {
         return teamRepository.save(team);
     }
 
-    public Optional<Team> deActivate(Long teamId) {
-        Optional<Team> result = teamRepository.findById(teamId);
+    public Optional<Team> deActivate(Team team) {
+        Optional<Team> result = teamRepository.findById(team.getId());
 
-        result.ifPresent(Team::deActivate);
+        result.ifPresent(t -> {
+            t.deActivate();
+            teamRepository.save(result.get());
+        });
 
         return result;
     }
@@ -47,13 +50,13 @@ public final class TeamService {
         return teamRepository.findAll();
     }
 
-    public Optional<User> addUser(User user, Team team) {
-        Optional<Team> teamResult = teamRepository.findById(team.getId());
+    public Optional<User> addUser(Long teamId, User user) {
+        Optional<Team> teamResult = teamRepository.findById(teamId);
         Optional<User> userResult = userRepository.findById(user.getId());
 
         if (teamResult.isPresent() && userResult.isPresent()) {
             user = userResult.get();
-            team = teamResult.get();
+            Team team = teamResult.get();
 
             validate(team);
             user.setTeam(team);
