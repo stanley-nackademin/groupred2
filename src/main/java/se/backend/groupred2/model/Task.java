@@ -1,5 +1,7 @@
 package se.backend.groupred2.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,23 +12,22 @@ public final class Task {
     private Long id;
 
     @Column(nullable = false)
-    private String title, text;
+    private String title, description;
 
     @Column
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
     @ManyToOne
+    @JsonBackReference
     private User user;
-
-    // Mappning mot team?
 
     protected Task() {
     }
 
-    public Task(String title, String text, TaskStatus status) {
+    public Task(String title, String description, TaskStatus status) {
         this.title = title;
-        this.text = text;
+        this.description = description;
         this.status = status;
 
     }
@@ -35,19 +36,39 @@ public final class Task {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    public String getText() {
-        return text;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public TaskStatus getStatus() {
         return status;
     }
 
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
     public User getUser() {
         return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
