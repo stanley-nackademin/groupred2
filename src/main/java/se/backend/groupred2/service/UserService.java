@@ -1,6 +1,7 @@
 package se.backend.groupred2.service;
 
 import org.springframework.stereotype.Service;
+import se.backend.groupred2.model.TaskStatus;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
 import se.backend.groupred2.repository.TeamRepository;
@@ -43,7 +44,7 @@ public final class UserService {
 
             if (userupdate.isActive() == false) {
                 System.out.println("tasks");
-                result.get().getTasks().equals("UNSTARTED");
+                ValidateInactiverasUser(user);
 
 
             }
@@ -81,9 +82,9 @@ public final class UserService {
         return null;
     }
 
-    public Optional<User> getALLUserByteamId(Long id) {
+    public Optional<User> getALLUserByteamId(Long teamId) {
 
-        Optional<User> user = repository.findAllUserByTeamId(id);
+        Optional<User> user = repository.findAllUserByTeamId(teamId);
         if (user.isPresent()) {
             return user;
         } else {
@@ -92,25 +93,38 @@ public final class UserService {
     }
 
 //
-//    public Optional<User> updatUserInactiv(long id, User user) {
-//        Optional<User> result = repository.findById(id);
-//        if (result.isPresent()) {
-//            User userupdateInactiv = result.get();
-//            if (user.isActive() == true) {
-//                userupdateInactiv.setActive(false);
-//                return Optional.of(repository.save(userupdateInactiv));
-//            }
-//        }
-//
-//        return Optional.empty();
-//    }
+////    public Optional<User> updatUserInactiv(long id, User user) {
+////        Optional<User> result = repository.findById(id);
+////        if (result.isPresent()) {
+////            User userupdateInactiv = result.get();
+////            if (user.isActive() == true) {
+////                userupdateInactiv.setActive(false);
+////                return Optional.of(repository.save(userupdateInactiv));
+////            }
+////        }
+////
+////        return Optional.empty();
+////    }
 
     private void validate(User user) {
         int UserName = user.getUserName().length();
         if (UserName < 10) {
             throw new InvalidUserException("UserName är minst än 10 token");
         }
+
+
     }
+
+    private void ValidateInactiverasUser(User user) {
+        user.getTasks().forEach(task -> {
+            task.setStatus(TaskStatus.UNSTARTED);
+        });
+    }
+
+
+
+
+
 
 }
 

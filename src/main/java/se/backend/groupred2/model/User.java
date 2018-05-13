@@ -102,5 +102,9 @@ public final class User {
         return tasks;
     }
 
+    public void deActivate() {
+        this.active = false;
+    }
+
     //TODO add task / remove task / toString ?
 }

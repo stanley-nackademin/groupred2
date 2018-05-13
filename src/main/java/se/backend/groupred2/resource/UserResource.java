@@ -29,12 +29,6 @@ public final class UserResource {
         return Response.status(CREATED).header("Location", "Users/" + result.getId()).build();
     }
 
-//
-//    @GET
-//    public Response getUserByUserNumber(@QueryParam("usernumber") @DefaultValue("0") long usernumber) {
-//        return Response.ok(service.getUser(usernumber)).build();
-//    }
-
 
     @PUT
     @Path("{id}")
@@ -55,8 +49,8 @@ public final class UserResource {
 
 
     @GET
-    @Path("{id}")
-    public Response getAllUserByteamId(@PathParam("id") Long teamId) {
+    @Path("{teamid}")
+    public Response getAllUserByteamId(@PathParam("teamid") Long teamId) {
         return service.getALLUserByteamId(teamId)
                 .map(Response::ok)
                 .orElse(Response.status(NOT_FOUND))
@@ -64,4 +58,6 @@ public final class UserResource {
 
 
     }
+
+
 }
