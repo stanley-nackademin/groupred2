@@ -44,10 +44,10 @@ public final class TeamResource {
                 .build();
     }
 
-    // team/update?id=1
+    // team/update
     @PUT
     @Path("update")
-    public Response update(@QueryParam("id") Long teamId, Team team) {
+    public Response update(Team team) {
 
         return service.update(team)
                 .map(t -> Response.status(OK))
