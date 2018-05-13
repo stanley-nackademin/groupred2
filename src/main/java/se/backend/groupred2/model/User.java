@@ -1,7 +1,5 @@
 package se.backend.groupred2.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -14,6 +12,7 @@ public final class User {
 
     @Column(nullable = false)
     private String firstName, lastName, userName;
+
     private boolean active;
 
     @Column(nullable = false, unique = true)
@@ -23,9 +22,8 @@ public final class User {
     @JoinColumn
     private Team team;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    private Collection<Task> tasks;
+//    @OneToMany(mappedBy = "user")
+//    private Collection<Task> tasks;
 
     protected User() {
     }
@@ -64,46 +62,18 @@ public final class User {
         return userNumber;
     }
 
+
+
+//    public Collection<Task> getTasks() {
+//        return tasks;
+//    }
+
     public Team getTeam() {
         return team;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public void setUserNumber(Long userNumber) {
-        this.userNumber = userNumber;
-    }
-
-
     public void setTeam(Team team) {
         this.team = team;
-    }
-
-
-    public void setTasks(Collection<Task> tasks) {
-        this.tasks = tasks;
-    }
-
-    public Collection<Task> getTasks() {
-        return tasks;
-    }
-
-    public void deActivate() {
-        this.active = false;
     }
 
     //TODO add task / remove task / toString ?
