@@ -26,6 +26,10 @@ public final class Team {
 
     }
 
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public Long getId() {
         return id;
     }

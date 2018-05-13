@@ -1,5 +1,7 @@
 package se.backend.groupred2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -21,6 +23,7 @@ public final class User {
     @JoinColumn
     private Team team;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Collection<Task> tasks;
 
@@ -63,6 +66,36 @@ public final class User {
 
     public Team getTeam() {
         return team;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void setUserNumber(Long userNumber) {
+        this.userNumber = userNumber;
+    }
+
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+
+    public void setTasks(Collection<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public Collection<Task> getTasks() {
