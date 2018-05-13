@@ -1,12 +1,11 @@
 package se.backend.groupred2.service;
 
 import org.springframework.stereotype.Service;
-
 import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
-import se.backend.groupred2.resource.mapper.FullTeamExcepetion;
+import se.backend.groupred2.resource.Mapper.FullTeamExcepetion;
 
 import java.util.Optional;
 

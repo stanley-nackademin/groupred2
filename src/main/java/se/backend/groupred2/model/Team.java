@@ -1,10 +1,9 @@
 package se.backend.groupred2.model;
 
-import org.springframework.beans.factory.annotation.Value;
-
-import javax.persistence.*;
-import javax.ws.rs.DefaultValue;
-import java.util.Collection;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Entity
 public final class Team {

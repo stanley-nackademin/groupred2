@@ -1,11 +1,11 @@
-package se.backend.groupred2.resource.mapper;
+package se.backend.groupred2.resource.Mapper;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import static java.util.Collections.*;
-import static javax.ws.rs.core.Response.Status.*;
+import static java.util.Collections.singletonMap;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 
 
 @Provider

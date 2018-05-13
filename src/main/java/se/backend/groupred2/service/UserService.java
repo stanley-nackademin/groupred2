@@ -24,10 +24,6 @@ public final class UserService {
         this.taskRepository = taskRepository;
     }
 
-    public Iterable<User> getAllUsers() {
-        return repository.findAll();
-    }
-
     public User createUser(User user) {
         validate(user);
         return repository.save(new User(user.getFirstName(), user.getLastName(),
@@ -48,8 +44,7 @@ public final class UserService {
 
             if (userupdate.isActive() == false) {
                 System.out.println("tasks");
-                ValidateInactiverasUser(user);
-
+                validateInactiveUser(user);
 
             }
 
@@ -86,9 +81,9 @@ public final class UserService {
         return null;
     }
 
-    public Optional<User> getALLUserByteamId(Long teamId) {
+    public Optional<User> getALLUserByteamId(Long id) {
 
-        Optional<User> user = repository.findAllUserByTeamId(teamId);
+        Optional<User> user = repository.findAllUserByTeamId(id);
         if (user.isPresent()) {
             return user;
         } else {
@@ -97,37 +92,29 @@ public final class UserService {
     }
 
 //
-////    public Optional<User> updatUserInactiv(long id, User user) {
-////        Optional<User> result = repository.findById(id);
-////        if (result.isPresent()) {
-////            User userupdateInactiv = result.get();
-////            if (user.isActive() == true) {
-////                userupdateInactiv.setActive(false);
-////                return Optional.of(repository.save(userupdateInactiv));
-////            }
-////        }
-////
-////        return Optional.empty();
-////    }
+//    public Optional<User> updatUserInactiv(long id, User user) {
+//        Optional<User> result = repository.findById(id);
+//        if (result.isPresent()) {
+//            User userupdateInactiv = result.get();
+//            if (user.isActive() == true) {
+//                userupdateInactiv.setActive(false);
+//                return Optional.of(repository.save(userupdateInactiv));
+//            }
+//        }
+//
+//        return Optional.empty();
+//    }
 
     private void validate(User user) {
         int UserName = user.getUserName().length();
         if (UserName < 10) {
-            throw new InvalidUserException("UserName är minst än 10 token");
+            throw new InvalidUserException("UserName Ã¤r minst Ã¤n 10 token");
         }
-
-
     }
 
-    private void ValidateInactiverasUser(User user) {
-        user.getTasks().forEach(task -> {
-            task.setStatus(TaskStatus.UNSTARTED);
-        });
+    private void validateInactiveUser(User user) {
+        user.getTasks().forEach(task -> task.setStatus(TaskStatus.UNSTARTED));
     }
-
-
-
-
 
 
 }

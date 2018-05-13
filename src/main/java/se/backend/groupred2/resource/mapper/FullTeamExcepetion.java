@@ -1,4 +1,4 @@
-package se.backend.groupred2.resource.mapper;
+package se.backend.groupred2.resource.Mapper;
 
 public class FullTeamExcepetion extends RuntimeException {
     public FullTeamExcepetion(String message) {
