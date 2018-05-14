@@ -1,14 +1,16 @@
 package se.backend.groupred2.service;
 
 import org.springframework.stereotype.Service;
-import se.backend.groupred2.model.TaskStatus;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
 import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
+import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.List;
 import java.util.Optional;
+
+import static se.backend.groupred2.model.TaskStatus.UNSTARTED;
 
 @Service
 public final class UserService {
@@ -113,7 +115,7 @@ public final class UserService {
     }
 
     private void validateInactiveUser(User user) {
-        user.getTasks().forEach(task -> task.setStatus(TaskStatus.UNSTARTED));
+        user.getTasks().forEach(task -> task.setStatus(UNSTARTED));
     }
 
 

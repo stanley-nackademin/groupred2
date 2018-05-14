@@ -5,7 +5,7 @@ import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
-import se.backend.groupred2.resource.mapper.FullTeamExcepetion;
+import se.backend.groupred2.service.exceptions.InvalidTeamException;
 
 import java.util.Optional;
 
@@ -68,7 +68,7 @@ public final class TeamService {
 
     private void validate(Team team) {
         if (userRepository.countAllByTeam(team) >= team.getMaxUsers()) {
-            throw new FullTeamExcepetion("Can't add user. Team is full");
+            throw new InvalidTeamException("Can't add user. Team is full");
         }
     }
 }

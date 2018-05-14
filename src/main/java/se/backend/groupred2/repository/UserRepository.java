@@ -20,6 +20,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     Optional<User> findAllUserByTeamId(Long id);
 
+    List<User> findUsersByTeamId(Long id);
+
 }
 
 
