@@ -34,18 +34,36 @@ public final class TeamResource {
         return Response.status(CREATED).header("Location", "Team/" + result.getId()).build();
     }
 
-    // teams/1/adduser
-    @PUT
-    @Path("{id}/adduser")
-    public Response addUser(@PathParam("id") Long teamId, User user) {
+    // teams/1/adduser - body { "id": 1 }
 
-        return service.addUser(teamId, user)
+//    @PUT
+//    @Path("{id}/adduser")
+//    public Response addUser(@PathParam("id") Long teamId, User user) {
+//
+//        return service.addUser(teamId, user)
+//                .map(u -> Response.status(OK))
+//                .orElse(Response.status((NOT_FOUND)))
+//                .build();
+//    }
+
+    /*
+
+    teams/adduser
+
+    body { "teamId": 1, "userId":1 }
+
+     */
+    @PUT
+    @Path("adduser")
+    public Response addUser(TeamUser teamUser) {
+
+        return service.addUser(teamUser.getTeamId(), teamUser.getUserId())
                 .map(u -> Response.status(OK))
                 .orElse(Response.status((NOT_FOUND)))
                 .build();
     }
 
-    // teams/update
+    // teams/update { "id":1, "name":"new name" }
     @PUT
     @Path("update")
     public Response update(Team team) {
@@ -57,6 +75,7 @@ public final class TeamResource {
     }
 
     // teams/deActivate
+    // body { "id":1 }
     @PUT
     @Path("deactivate")
     public Response deActivate(Team team) {
