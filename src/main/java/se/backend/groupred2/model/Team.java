@@ -47,6 +47,10 @@ public final class Team {
         this.active = false;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
     public int getMaxUsers() {
         return maxUsers;
     }
