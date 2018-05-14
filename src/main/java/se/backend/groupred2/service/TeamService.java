@@ -1,7 +1,6 @@
 package se.backend.groupred2.service;
 
 import org.springframework.stereotype.Service;
-
 import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
@@ -73,3 +72,4 @@ public final class TeamService {
         }
     }
 }
+
