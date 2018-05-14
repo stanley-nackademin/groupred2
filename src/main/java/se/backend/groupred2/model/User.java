@@ -2,6 +2,7 @@ package se.backend.groupred2.model;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 public final class User {
@@ -12,7 +13,6 @@ public final class User {
 
     @Column(nullable = false)
     private String firstName, lastName, userName;
-
     private boolean active;
 
     @Column(nullable = false, unique = true)
@@ -22,8 +22,8 @@ public final class User {
     @JoinColumn
     private Team team;
 
-//    @OneToMany(mappedBy = "user")
-//    private Collection<Task> tasks;
+    @OneToMany(mappedBy = "user")
+    private List<Task> tasks;
 
     protected User() {
     }
@@ -62,9 +62,15 @@ public final class User {
         return userNumber;
     }
 
+    public List<Task> getTasks() {
+        return tasks;
+    }
 
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
 
-//    public Collection<Task> getTasks() {
+    //    public Collection<Task> getTasks() {
 //        return tasks;
 //    }
 

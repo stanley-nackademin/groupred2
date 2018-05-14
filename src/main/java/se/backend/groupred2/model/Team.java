@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import javax.persistence.*;
 import javax.ws.rs.DefaultValue;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 public final class Team {
@@ -22,6 +23,9 @@ public final class Team {
     //lättare om man någon gång i framtiden vill utöka antal users i ett team
     @Column(nullable = false)
     private int maxUsers;
+
+    /*@OneToMany
+    private List<User> users;*/
 
     protected Team() {
     }

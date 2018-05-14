@@ -14,7 +14,7 @@ import static javax.ws.rs.core.Response.Status.*;
 @Component
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
-@Path("team")
+@Path("teams")
 public final class TeamResource {
     private final TeamService service;
 
@@ -34,7 +34,7 @@ public final class TeamResource {
         return Response.status(CREATED).header("Location", "Team/" + result.getId()).build();
     }
 
-    // team/1/adduser
+    // teams/1/adduser
     @PUT
     @Path("{id}/adduser")
     public Response addUser(@PathParam("id") Long teamId, User user) {
@@ -45,7 +45,7 @@ public final class TeamResource {
                 .build();
     }
 
-    // team/update
+    // teams/update
     @PUT
     @Path("update")
     public Response update(Team team) {
@@ -56,7 +56,7 @@ public final class TeamResource {
                 .build();
     }
 
-    // team/deActivate
+    // teams/deActivate
     @PUT
     @Path("deactivate")
     public Response deActivate(Team team) {

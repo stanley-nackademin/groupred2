@@ -3,6 +3,7 @@ package se.backend.groupred2.resource;
 import org.springframework.stereotype.Component;
 import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
+import se.backend.groupred2.model.User;
 import se.backend.groupred2.service.TaskService;
 
 import javax.validation.constraints.NotNull;
@@ -44,21 +45,21 @@ public final class TaskResource {
 //                .build();
 //    }
 
-//    @GET
-//    @Path("{status}")
-//    public List<Task> getAllTasksByStatus(@PathParam("status") String status) {
-//        return service.getAllTasksByStatus(status);
-//    }
+    @GET
+    //@Path("{status}")
+    public List<Task> getAllTasksByStatus(@QueryParam("status") String status) {
+        return service.getAllTasksByStatus(status);
+    }
 
     @GET
     @Path("team/{id}")
-    public List<Task> getAllTasksByTeam(@PathParam("id") Long teamId){
+    public List<Task> getAllTasksByTeam(@PathParam("id") Long teamId) {
         return service.getAllTasksByTeamId(teamId);
     }
 
     @GET
     @Path("user/{id}")
-    public List<Task> getAllTasksByUser(@PathParam("id") Long userId){
+    public List<Task> getAllTasksByUser(@PathParam("id") Long userId) {
         return service.getAllTasksByUserId(userId);
     }
 
@@ -78,22 +79,22 @@ public final class TaskResource {
     }
 
     @PUT
-    @Path("{id}/users/{userId}")
-    public Response assignTaskToUser(@PathParam("id") Long id, @PathParam("userId") Long userId) {
-        return service.assignTaskToUser(id, userId)
+    @Path("{id}/adduser")
+    public Response assignTaskToUser(@PathParam("id") Long id, User user) {
+        return service.assignTaskToUser(id, user)
                 .map(t -> Response.status(NO_CONTENT))
                 .orElse(Response.status(NOT_FOUND))
                 .build();
     }
 
-    /*@PUT
-    @Path("{id}")
-    public Response updateTask(@PathParam("id") Long id, Task task) {
-        return service.updateTask(id, task)
-                .map(Response::ok)
-                .orElse(Response.status(NOT_FOUND))
-                .build();
-    }*/
+//    @PUT
+//    @Path("{id}")
+//    public Response updateTask(@PathParam("id") Long id, Task task) {
+//        return service.updateTask(id, task)
+//                .map(Response::ok)
+//                .orElse(Response.status(NOT_FOUND))
+//                .build();
+//    }
 
 }
 
