@@ -5,7 +5,6 @@ import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
-import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidTaskException;
 
@@ -19,18 +18,16 @@ public final class TaskService {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
-    private final TeamRepository teamRepository;
 
-    public TaskService(TaskRepository taskRepository, UserRepository userRepository, TeamRepository teamRepository) {
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
-        this.teamRepository = teamRepository;
     }
 
+    //TODO En task bör endast kunna skapas om status är: UNSTARTED, STARTED eller DONE
     public Task createTask(Task task) {
-        validate(task);
+        validateTask(task);
         return taskRepository.save(new Task(task.getTitle(), task.getDescription(), task.getStatus()));
-        // return repository.save(task);  // räcker att bara spara task?
     }
 
     public Optional<Task> getTask(Long id) {
@@ -46,53 +43,47 @@ public final class TaskService {
         return temp;
     }
 
-    public Optional<Task> assignTaskToUser(Long id, User user) {
+    // Kan ändras så att den updaterar mer än bara status. Bör ha mer validates för att se så att rätt saker skickas in.
+    public Optional<Task> updateStatus(Long id, Task task) {
         Optional<Task> taskResult = taskRepository.findById(id);
-        Optional<User> userResult = userRepository.findById(user.getId());
 
-        List<Task> taskItems = taskRepository.findAllTaskByUserId(user.getId());
+        if (taskResult.isPresent()) {
+            Task updatedTask = taskResult.get();
 
-        System.out.println(user.getId() + " " + user.getFirstName());
-        System.out.println(userResult.get().getFirstName());
+            updatedTask.setStatus(task.getStatus());
+            taskRepository.save(updatedTask);
+        } else {
+            throw new InvalidTaskException("Could not find that task");
+        }
+        return taskResult;
+    }
+
+    public Optional<Task> assignTaskToUser(Long id, Long userId) {
+        Optional<Task> taskResult = taskRepository.findById(id);
+        Optional<User> userResult = userRepository.findById(userId);
+
+        List<Task> taskItems = taskRepository.findAllTaskByUserId(userId);
 
         if (taskResult.isPresent() && userResult.isPresent()) {
-            System.out.println("I is present");
-
-
             if (!userResult.get().isActive()) {
-                System.out.println("I isActive: ");
                 throw new InvalidTaskException("That user is not active");
             } else if (taskItems.size() > 4) {
-                System.out.println("I size");
                 throw new InvalidTaskException("To many tasks for that user, Max = 5");
-            }
-//            } else if (taskItems.size() > 4) {
-//                throw new InvalidTaskException("To many tasks for that user, Max = 5");
-//            } else if (taskItems.stream().anyMatch(t -> t.getId().equals(id))) {
-//                throw new InvalidTaskException("That user already have that task");
-//            }
+            } // kolla så user inte redan har samma task?
+
             Task temp = taskResult.get();
             temp.setUser(userResult.get());
-
             taskRepository.save(temp);
 
-            System.out.println("Sparat user");
-
             return taskResult;
-
         } else {
             throw new InvalidTaskException("Could not find a user or task");
         }
-
     }
 
     public List<Task> getAllTasksByStatus(String status) {
-        TaskStatus stat = TaskStatus.valueOf(status);
-        List<Task> tasks = taskRepository.findAllByStatus(stat);
-
-//        tasks = tasks.stream()
-//                .filter(task -> task.getStatus().equals(status))
-//                .collect(Collectors.toList());
+        validateStatus(status);
+        List<Task> tasks = taskRepository.findAllByStatus(TaskStatus.valueOf(status));
 
         if (tasks.isEmpty()) {
             throw new InvalidTaskException("Could not find any tasks with that status");
@@ -103,27 +94,11 @@ public final class TaskService {
     public List<Task> getAllTasksByUserId(Long userId) {
         List<Task> tasks = taskRepository.findAllTaskByUserId(userId);
 
-        /*tasks = tasks.stream()
-                .filter(task -> task.getUser().getId().equals(userId))
-                .collect(Collectors.toList());*/
-
         if (tasks.isEmpty()) {
             throw new InvalidTaskException("Could not find any tasks for that user");
         }
         return tasks;
     }
-
-//    public List<Task> getAllTasksByTeamId(Long teamId) {
-//        List<User> users = userRepository.findUsersByTeamId(teamId);
-//
-//        if (users.isEmpty()) {
-//            throw new InvalidTaskException("Could not find any tasks for that team");
-//        }
-//
-//        return taskRepository.findAll().stream()
-//                .filter(task -> task.getUser().getTeam().equals(teamId))
-//                .collect(Collectors.toList());
-//    }
 
     public List<Task> getAllTasksByDescription(String description) {
         List<Task> tasks = taskRepository.findAll();
@@ -138,31 +113,27 @@ public final class TaskService {
         return tasks;
     }
 
-    private void validate(Task task) {
-        if (task.getTitle().isEmpty() || task.getTitle() == null || task.getDescription() == null || task.getStatus() == null) {
-            throw new InvalidTaskException("Title, description and status have to have values. Can not leave empty");
-        }
-    }
-
-    public List<Task> getAllTaskByUserId(Long userId) {
-        return taskRepository.findAllTaskByUserId(userId);
-    }
-
     public List<Task> getAllTasksByTeamId(Long teamId) {
-        //Optional<Team> teamResult = teamRepository.findById(teamId);
-        List<User> userResult = userRepository.findUsersByTeamId(teamId);  //spara alla users som tillhör detta team id.
-        List<Task> allTasks = new ArrayList<>();                                                                 // för varje user från detta team, spara deras tasks
-        //Returnera en lista på dessa tasks
-
-        userResult.forEach(user -> allTasks.addAll(taskRepository.findAllTaskByUserId(user.getId())));
-
-        for (Task item : allTasks) {
-            System.out.println(item);
+        List<User> userResult = userRepository.findUsersByTeamId(teamId);
+        if (userResult.isEmpty()) {
+            throw new InvalidTaskException("Could not find any users for that team");
         }
+        List<Task> allTasks = new ArrayList<>();
+        userResult.forEach(user -> allTasks.addAll(taskRepository.findAllTaskByUserId(user.getId())));
 
         return allTasks;
     }
+
+    private void validateTask(Task task) { //Lägg till empty också?
+        if (task.getTitle().isEmpty() || task.getTitle() == null || task.getDescription() == null || task.getStatus() == null) {
+            throw new InvalidTaskException("Title, description and status have to have values. Can not leave empty");
+        }  //lägg till så att man kollar om status är korrekt också.
+    }
+
+    public void validateStatus(String status) {
+        if (!status.equals("UNSTARTED") && !status.equals("STARTED") && !status.equals("DONE")) {
+            throw new InvalidTaskException("Incorrect status, have to be UNSTARTED, STARTED or DONE");
+        }
+    }
+
 }
-
-
-

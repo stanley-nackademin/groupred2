@@ -31,14 +31,14 @@ public final class TaskResource {
         return Response.status(CREATED).header("Location", "Tasks/" + result.getId()).build();
     }
 
-//    @GET
-//    @Path("{id}")
-//    public Response getTask(@PathParam("id") Long id) {
-//        return service.getTask(id)
-//                .map(Response::ok)
-//                .orElse(Response.status(NOT_FOUND))
-//                .build();
-//    }
+    @GET
+    @Path("{id}")
+    public Response getTask(@PathParam("id") Long id) {
+        return service.getTask(id)
+                .map(Response::ok)
+                .orElse(Response.status(NOT_FOUND))
+                .build();
+    }
 
     @GET
     //@Path("{status}")
@@ -59,8 +59,8 @@ public final class TaskResource {
     }
 
     @GET
-    @Path("{description}")
-    public List<Task> getAllTasksByDescription(@PathParam("description") String description) {
+    @Path("description") //queryparams för description
+    public List<Task> getAllTasksByDescription(@QueryParam("desc") String description) {
         return service.getAllTasksByDescription(description);
     }
 
@@ -75,21 +75,21 @@ public final class TaskResource {
 
     @PUT
     @Path("{id}/adduser")
-    public Response assignTaskToUser(@PathParam("id") Long id, User user) {
-        return service.assignTaskToUser(id, user)
+    public Response assignTaskToUser(@PathParam("id") Long id, Long userId) {
+        return service.assignTaskToUser(id, userId)
                 .map(t -> Response.status(NO_CONTENT))
                 .orElse(Response.status(NOT_FOUND))
                 .build();
     }
 
-//    @PUT
-//    @Path("{id}")
-//    public Response updateTask(@PathParam("id") Long id, Task task) {
-//        return service.updateTask(id, task)
-//                .map(Response::ok)
-//                .orElse(Response.status(NOT_FOUND))
-//                .build();
-//    }
+    @PUT
+    @Path("{id}")
+    public Response updateTask(@PathParam("id") Long id, Task task) {
+        return service.updateStatus(id, task)
+                .map(Response::ok)
+                .orElse(Response.status(NOT_FOUND))
+                .build();
+    }
 
 }
 
