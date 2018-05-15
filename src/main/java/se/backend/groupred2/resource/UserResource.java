@@ -61,7 +61,5 @@ public final class UserResource {
                 .map(Response::ok)
                 .orElse(Response.status(NOT_FOUND))
                 .build();
-
-
     }
 }

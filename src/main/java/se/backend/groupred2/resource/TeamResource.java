@@ -23,6 +23,10 @@ public final class TeamResource {
     }
 
     @GET
+    @Path("{id}")
+    public Response getTeam(@PathParam("id") Long id) { return Response.ok(service.getTeam(id)).build(); }
+
+    @GET
     public Response getAllTeams() {
         return Response.ok(service.getAllTeams()).build();
     }
@@ -37,7 +41,7 @@ public final class TeamResource {
     // post teams/{id}/user { "id":1 }
 
     @PUT
-    @Path("{id}/users")
+    @Path("{id}/users/")
     public Response addUser(@PathParam("id") Long teamId, User user) {
 
         return service.addUser(teamId, user.getId())
@@ -49,7 +53,7 @@ public final class TeamResource {
     // teams/1/update { "name":"new name" }
     @PUT
     @Path("{id}/update")
-    public Response update(@QueryParam("id") Long teamId, Team team) {
+    public Response update(@PathParam("id") Long teamId, Team team) {
 
         return service.update(teamId, team)
                 .map(t -> Response.status(OK))
@@ -60,7 +64,7 @@ public final class TeamResource {
     // teams/{id}/deactivate
     @PUT
     @Path("{id}/deactivate")
-    public Response deActivate(Long teamId, Team team) {
+    public Response deActivate(@PathParam("id") Long teamId, Team team) {
 
         return service.deActivate(teamId)
                 .map(t -> Response.status(OK))
