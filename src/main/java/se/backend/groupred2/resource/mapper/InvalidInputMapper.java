@@ -1,7 +1,6 @@
-package se.backend.groupred2.resource.Mapper;
+package se.backend.groupred2.resource.mapper;
 
 import se.backend.groupred2.service.exceptions.InvalidInputException;
-import se.backend.groupred2.service.exceptions.InvalidTaskException;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
