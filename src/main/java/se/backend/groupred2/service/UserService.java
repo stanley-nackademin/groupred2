@@ -1,6 +1,8 @@
 package se.backend.groupred2.service;
 
 import org.springframework.stereotype.Service;
+import se.backend.groupred2.model.Task;
+import se.backend.groupred2.model.TaskStatus;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
 import se.backend.groupred2.repository.TeamRepository;
@@ -9,11 +11,11 @@ import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.List;
 import java.util.Optional;
-
-import static se.backend.groupred2.model.TaskStatus.UNSTARTED;
+import java.util.stream.Collectors;
 
 @Service
 public final class UserService {
+
 
     private final UserRepository repository;
     private final TeamRepository repositoryTeam;
@@ -33,103 +35,93 @@ public final class UserService {
     }
 
 
-    public Optional<User> updatUser(long id, User user) {
+    public Optional<User> update(User user) {
         validate(user);
-        Optional<User> result = repository.findById(id);
-        if (result.isPresent()) {
-            User userupdate = result.get();
-            userupdate.setFirstName(user.getFirstName());
-            userupdate.setLastName(user.getLastName());
-            userupdate.setUserName(user.getUserName());
-            userupdate.setUserNumber(user.getUserNumber());
-            userupdate.setActive(user.isActive());
+        Optional<User> result = repository.findById(user.getId());
 
-            if (userupdate.isActive() == false) {
-                System.out.println("tasks");
-                validateInactiveUser(user);
+        result.ifPresent(t -> {
+            t.setFirstName(user.getFirstName());
+            t.setLastName(user.getLastName());
+            t.setUserName(user.getUserName());
+            t.setUserNumber(user.getUserNumber());
+            t.setActive(user.isActive());
+            repository.save(result.get());
+        });
 
-            }
-
-            return Optional.of(repository.save(userupdate));
-
-        }
-
-
-        return Optional.empty();
-
+        return result;
     }
 
+
+    public Optional<User> deActivate(User user) {
+        Optional<User> result = repository.findById(user.getId());
+
+        result.ifPresent(t -> {
+            t.deActivate();
+            List<Task> tasks = getAllTasksByUserId(result.get().getId());
+            tasks.forEach(task -> task.setStatus(TaskStatus.UNSTARTED));
+            tasks.forEach(task -> taskRepository.save(task));
+
+            repository.save(result.get());
+        });
+
+        return result;
+    }
+
+
+    public List<Task> getAllTasksByUserId(Long userkId) {
+        return taskRepository.findAllByUser_Id(userkId);
+
+    }
 
     public List<User> getUserByUserNamefirstNameLastName(Long userNumber, String userName, String firstName, String lastName) {
 
         if (userNumber == 0) {
             if (!userName.equals("0")) {
-                List<User> user2 = repository.findUserByUserName(userName);
-                return user2;
+                List<User> user = repository.findUserByUserName(userName);
+                return user;
+
             } else if ((!firstName.equals("0"))) {
                 List<User> user = repository.findUserByFirstName(firstName);
                 return user;
             } else if (!lastName.equals("0")) {
 
-                List<User> user1 = repository.findUserByLastName(lastName);
-                return user1;
+                List<User> user = repository.findUserByLastName(lastName);
+                return user;
             }
 
 
         } else if (!(userNumber == 0)) {
             return repository.findByUserNumber(userNumber);
 
+        } else {
+            throw new InvalidUserException("fel");
         }
         return null;
     }
 
-    public Optional<User> getALLUserByteamId(Long id) {
 
-        Optional<User> user = repository.findAllUserByTeamId(id);
-        if (user.isPresent()) {
-            return user;
-        } else {
-            return Optional.empty();
-        }
+    public List<User> getALLUserByteamId(Long id) {
+
+        List<User> user = repository.findUsersByTeamId(id);
+        if (user.isEmpty())
+            throw new InvalidUserException("den e tom");
+
+        return repository.findAll().stream()  //gÃ¶r om detta till en strÃ¶m
+                .filter(t -> t.getTeam().getId().equals(id)) //behÃ¥ll alla teams med det hÃ¤r idt
+                .collect(Collectors.toList()); //gÃ¶r om strÃ¶mmen till en lista
     }
 
-//
-//    public Optional<User> updatUserInactiv(long id, User user) {
-//        Optional<User> result = repository.findById(id);
-//        if (result.isPresent()) {
-//            User userupdateInactiv = result.get();
-//            if (user.isActive() == true) {
-//                userupdateInactiv.setActive(false);
-//                return Optional.of(repository.save(userupdateInactiv));
-//            }
-//        }
-//
-//        return Optional.empty();
-//    }
 
     private void validate(User user) {
         int UserName = user.getUserName().length();
         if (UserName < 10) {
-            throw new InvalidUserException("UserName Ã¤r minst Ã¤n 10 token");
+            throw new InvalidUserException("UserName är minst än 10 token");
+        } else if (user.getUserName().isEmpty() && user.getUserName() == null) {
+            throw new InvalidUserException("userName is Empty");
+
         }
     }
-
-    private void validateInactiveUser(User user) {
-        user.getTasks().forEach(task -> task.setStatus(UNSTARTED));
-    }
-
 
 }
 
 
-//    public List<User> getUser(long userNumber) {
-//        List<User> userList = new ArrayList<>();
-//
-//        if (userNumber == 0) {
-//            repository.findAll().forEach(t -> userList.add(t));
-//            return userList;
-//        } else if (!(userNumber == 0)) {
-//            return repository.findByUserNumber(userNumber);
-//        }
-//        return null;
-//    }

@@ -61,13 +61,13 @@ public final class TeamService {
         Optional<Team> teamResult = teamRepository.findById(teamId);
         Optional<User> userResult = userRepository.findById(userId);
 
-        if(!teamResult.isPresent() && !userResult.isPresent()) {
+        if (!teamResult.isPresent() && !userResult.isPresent()) {
             throw new InvalidInputException("Team and User does not exist");
 
-        } else if(!teamResult.isPresent()) {
+        } else if (!teamResult.isPresent()) {
             throw new InvalidTeamException("Team does not exist.");
 
-        } else if(!userResult.isPresent()) {
+        } else if (!userResult.isPresent()) {
             throw new InvalidUserException("User does not exist");
 
         } else {
