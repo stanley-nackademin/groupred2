@@ -5,9 +5,10 @@ import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserRepository extends CrudRepository<User, Long> {
+
+
     int countByTeam(Team team);
 
     List<User> findByUserNumber(Long userNumber);
@@ -18,9 +19,24 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<User> findUserByLastName(String lastName);
 
-    Optional<User> findAllUserByTeamId(Long id);
+    //List<User> findAllUserByTeamId(Long id);
 
-    List<User> findUsersByTeamId(Long id);
+    List<User> findUsersByTeamId(Long teamId);
+
+    List<User> findAll();
+
+    //int countAllByTeam(Team team);
+//    List<User> findByUserNumber(Long userNumber);
+//
+//    List<User> findUserByUserName(String userName);
+//
+//    List<User> findUserByFirstName(String firstName);
+//
+//    List<User> findUserByLastName(String lastName);
+//
+//    Optional<User> findAllUserByTeamId(Long id);
+//
+//    List<User> findUsersByTeamId(Long id);
 
 }
 

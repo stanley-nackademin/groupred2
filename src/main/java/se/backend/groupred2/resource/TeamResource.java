@@ -44,7 +44,7 @@ public final class TeamResource {
     @Path("{id}/users/")
     public Response addUser(@PathParam("id") Long teamId, User user) {
 
-        return service.addUser(teamId, user.getId())
+        return service.addUser(teamId, user)
                 .map(u -> Response.status(OK))
                 .orElse(Response.status((NOT_FOUND)))
                 .build();

@@ -2,20 +2,15 @@ package se.backend.groupred2.resource;
 
 import org.springframework.stereotype.Component;
 import se.backend.groupred2.model.Task;
-import se.backend.groupred2.model.TaskStatus;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.service.TaskService;
 
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.Status.CREATED;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static javax.ws.rs.core.Response.Status.NO_CONTENT;
+import static javax.ws.rs.core.Response.Status.*;
 
 @Component
 @Consumes(APPLICATION_JSON)
@@ -36,14 +31,14 @@ public final class TaskResource {
         return Response.status(CREATED).header("Location", "Tasks/" + result.getId()).build();
     }
 
-//    @GET
-//    @Path("{id}")
-//    public Response getTask(@PathParam("id") Long id) {
-//        return service.getTask(id)
-//                .map(Response::ok)
-//                .orElse(Response.status(NOT_FOUND))
-//                .build();
-//    }
+    @GET
+    @Path("{id}")
+    public Response getTask(@PathParam("id") Long id) {
+        return service.getTask(id)
+                .map(Response::ok)
+                .orElse(Response.status(NOT_FOUND))
+                .build();
+    }
 
     @GET
     //@Path("{status}")
@@ -64,8 +59,8 @@ public final class TaskResource {
     }
 
     @GET
-    @Path("{description}")
-    public List<Task> getAllTasksByDescription(@PathParam("description") String description) {
+    @Path("description") //queryparams för description
+    public List<Task> getAllTasksByDescription(@QueryParam("desc") String description) {
         return service.getAllTasksByDescription(description);
     }
 
@@ -81,20 +76,20 @@ public final class TaskResource {
     @PUT
     @Path("{id}/adduser")
     public Response assignTaskToUser(@PathParam("id") Long id, User user) {
-        return service.assignTaskToUser(id, user)
+        return service.assignTaskToUser(id, user.getId())
                 .map(t -> Response.status(NO_CONTENT))
                 .orElse(Response.status(NOT_FOUND))
                 .build();
     }
 
-//    @PUT
-//    @Path("{id}")
-//    public Response updateTask(@PathParam("id") Long id, Task task) {
-//        return service.updateTask(id, task)
-//                .map(Response::ok)
-//                .orElse(Response.status(NOT_FOUND))
-//                .build();
-//    }
+    @PUT
+    @Path("{id}")
+    public Response updateTask(@PathParam("id") Long id, Task task) {
+        return service.updateStatus(id, task)
+                .map(Response::ok)
+                .orElse(Response.status(NOT_FOUND))
+                .build();
+    }
 
 }
 

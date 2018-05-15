@@ -1,5 +1,6 @@
 package se.backend.groupred2.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -7,6 +8,7 @@ import java.util.Collection;
 
 @Entity
 public final class User {
+
 
     @Id
     @GeneratedValue  //(strategy = GenerationType.IDENTITY)
@@ -20,7 +22,7 @@ public final class User {
     private Long userNumber;
 
     @ManyToOne //(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JsonBackReference
     private Team team;
 
     @JsonIgnore
@@ -88,6 +90,9 @@ public final class User {
         this.userNumber = userNumber;
     }
 
+    public void deActivate() {
+        this.active = false;
+    }
 
     public void setTeam(Team team) {
         this.team = team;
