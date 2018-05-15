@@ -6,16 +6,17 @@ import se.backend.groupred2.service.UserService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.Status.CREATED;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.*;
 
 @Component
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
 @Path("users")
 public final class UserResource {
+
 
     private final UserService service;
 
@@ -29,11 +30,29 @@ public final class UserResource {
         return Response.status(CREATED).header("Location", "Users/" + result.getId()).build();
     }
 
-//
-//    @GET
-//    public Response getUserByUserNumber(@QueryParam("usernumber") @DefaultValue("0") long usernumber) {
-//        return Response.ok(service.getUser(usernumber)).build();
-//    }
+
+    // users/update     vi mÃ¥ste skicka id och user
+    @PUT
+    @Path("update")
+    public Response update(User user) {
+
+        return service.update(user)
+                .map(t -> Response.status(OK))
+                .orElse(Response.status(NOT_FOUND))
+                .build();
+    }
+
+
+    // users/deactivate         vi mÃ¥ste skicka id bara
+    @PUT
+    @Path("deactivate")
+    public Response deActivate(User user) {
+
+        return service.deActivate(user)
+                .map(t -> Response.status(OK))
+                .orElse(Response.status(NOT_FOUND))
+                .build();
+    }
 
 
     @GET
@@ -46,22 +65,15 @@ public final class UserResource {
     }
 
 
-    @PUT
-    @Path("{id}")
-    public Response updateUser(@PathParam("id") long id, User user) {
-        return service.updatUser(id, user)
-                .map(Response::ok).orElse(Response.status(NOT_FOUND)).build();
-    }
-
 
     @GET
-    @Path("{id}")
-    public Response getAllUserByteamId(@PathParam("id") Long teamId) {
-        return service.getALLUserByteamId(teamId)
-                .map(Response::ok)
-                .orElse(Response.status(NOT_FOUND))
-                .build();
-
-
+    @Path("getByTeamId/{id}")
+    public List<User> getAllUserByTeamId(@PathParam("id") Long teamId) {
+        return service.getALLUserByteamId(teamId);
     }
+
+
+
+
+
 }

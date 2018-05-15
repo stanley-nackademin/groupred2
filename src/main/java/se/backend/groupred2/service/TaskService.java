@@ -3,16 +3,13 @@ package se.backend.groupred2.service;
 import org.springframework.stereotype.Service;
 import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
-import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
 import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidTaskException;
 
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

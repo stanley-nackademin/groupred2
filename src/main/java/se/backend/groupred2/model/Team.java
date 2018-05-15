@@ -1,12 +1,11 @@
 package se.backend.groupred2.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public final class Team {
+
 
     @Id
     @GeneratedValue
@@ -15,12 +14,14 @@ public final class Team {
     @Column(nullable = false)
     private String name;
 
-    //sätt team inactive som default?
+    //sÃ¤tt team inactive som default?
     private boolean active;
 
-    //lättare om man någon gång i framtiden vill utöka antal users i ett team
+    //lÃ¤ttare om man nÃ¥gon gÃ¥ng i framtiden vill utÃ¶ka antal users i ett team
     @Column(nullable = false)
     private int maxUsers;
+    @OneToMany
+    List<User> users;
 
     protected Team() {
     }
