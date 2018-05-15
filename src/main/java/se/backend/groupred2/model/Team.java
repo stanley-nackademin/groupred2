@@ -1,11 +1,9 @@
 package se.backend.groupred2.model;
 
-import org.springframework.beans.factory.annotation.Value;
-
-import javax.persistence.*;
-import javax.ws.rs.DefaultValue;
-import java.util.Collection;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Entity
 public final class Team {
@@ -24,9 +22,6 @@ public final class Team {
     @Column(nullable = false)
     private int maxUsers;
 
-    /*@OneToMany
-    private List<User> users;*/
-
     protected Team() {
     }
 
@@ -34,6 +29,10 @@ public final class Team {
         this.name = name;
         this.active = active;
         this.maxUsers = maxUsers;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Long getId() {
@@ -46,6 +45,10 @@ public final class Team {
 
     public void deActivate() {
         this.active = false;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 
     public int getMaxUsers() {

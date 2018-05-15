@@ -1,7 +1,6 @@
 package se.backend.groupred2.service;
 
 import org.springframework.stereotype.Service;
-
 import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
 import se.backend.groupred2.model.User;
