@@ -2,6 +2,7 @@ package se.backend.groupred2.resource;
 
 import org.springframework.stereotype.Component;
 import se.backend.groupred2.model.Team;
+import se.backend.groupred2.model.User;
 import se.backend.groupred2.service.TeamService;
 
 import javax.ws.rs.*;
@@ -39,7 +40,7 @@ public final class TeamResource {
     @Path("{id}/users")
     public Response addUser(@PathParam("id") Long teamId, User user) {
 
-        return service.addUser(teamId, user.getId())
+        return service.addUser(teamId, user)
                 .map(u -> Response.status(OK))
                 .orElse(Response.status((NOT_FOUND)))
                 .build();
@@ -48,7 +49,7 @@ public final class TeamResource {
     // teams/1/update { "name":"new name" }
     @PUT
     @Path("{id}/update")
-    public Response update(@QueryParam("id") Long teamId, Team team) {
+    public Response update(@PathParam("id") Long teamId, Team team) {
 
         return service.update(teamId, team)
                 .map(t -> Response.status(OK))
@@ -59,7 +60,7 @@ public final class TeamResource {
     // teams/{id}/deactivate
     @PUT
     @Path("{id}/deactivate")
-    public Response deActivate(Long teamId, Team team) {
+    public Response deActivate(@PathParam("id") Long teamId, Team team) {
 
         return service.deActivate(teamId)
                 .map(t -> Response.status(OK))
