@@ -72,27 +72,21 @@ public final class UserService {
         return taskRepository.findAllByUser_Id(userkId);
 
     }
-//
-//    public List<User> getUser(Long userNumber) {
-//      return repository.findByUserNumber(userNumber);
-//    }
-//
-
 
     public List<User> getUserByUserNamefirstNameLastName(Long userNumber, String userName, String firstName, String lastName) {
 
         if (userNumber == 0) {
             if (!userName.equals("0")) {
-                List<User> user2 = repository.findUserByUserName(userName);
-                return user2;
+                List<User> user = repository.findUserByUserName(userName);
+                return user;
 
             } else if ((!firstName.equals("0"))) {
                 List<User> user = repository.findUserByFirstName(firstName);
                 return user;
             } else if (!lastName.equals("0")) {
 
-                List<User> user1 = repository.findUserByLastName(lastName);
-                return user1;
+                List<User> user = repository.findUserByLastName(lastName);
+                return user;
             }
 
 
@@ -121,7 +115,10 @@ public final class UserService {
     private void validate(User user) {
         int UserName = user.getUserName().length();
         if (UserName < 10) {
-            throw new InvalidUserException("UserName Ã¤r minst Ã¤n 10 token");
+            throw new InvalidUserException("UserName är minst än 10 token");
+        } else if (user.getUserName().isEmpty() && user.getUserName() == null) {
+            throw new InvalidUserException("userName is Empty");
+
         }
     }
 
