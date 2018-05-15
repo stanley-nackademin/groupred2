@@ -2,7 +2,6 @@ package se.backend.groupred2.resource;
 
 import org.springframework.stereotype.Component;
 import se.backend.groupred2.model.Team;
-import se.backend.groupred2.model.User;
 import se.backend.groupred2.service.TeamService;
 
 import javax.ws.rs.*;
