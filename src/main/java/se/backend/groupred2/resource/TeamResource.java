@@ -34,53 +34,35 @@ public final class TeamResource {
         return Response.status(CREATED).header("Location", "Team/" + result.getId()).build();
     }
 
-    // teams/1/adduser - body { "id": 1 }
+    // post teams/{id}/user { "id":1 }
 
-//    @PUT
-//    @Path("{id}/adduser")
-//    public Response addUser(@PathParam("id") Long teamId, User user) {
-//
-//        return service.addUser(teamId, user)
-//                .map(u -> Response.status(OK))
-//                .orElse(Response.status((NOT_FOUND)))
-//                .build();
-//    }
-
-    /*
-
-    teams/adduser
-
-    body { "teamId": 1, "userId":1 }
-
-     */
     @PUT
-    @Path("adduser")
-    public Response addUser(TeamUser teamUser) {
+    @Path("{id}/users")
+    public Response addUser(@PathParam("id") Long teamId, User user) {
 
-        return service.addUser(teamUser.getTeamId(), teamUser.getUserId())
+        return service.addUser(teamId, user.getId())
                 .map(u -> Response.status(OK))
                 .orElse(Response.status((NOT_FOUND)))
                 .build();
     }
 
-    // teams/update { "id":1, "name":"new name" }
+    // teams/1/update { "name":"new name" }
     @PUT
-    @Path("update")
-    public Response update(Team team) {
+    @Path("{id}/update")
+    public Response update(@QueryParam("id") Long teamId, Team team) {
 
-        return service.update(team)
+        return service.update(teamId, team)
                 .map(t -> Response.status(OK))
                 .orElse(Response.status(NOT_FOUND))
                 .build();
     }
 
-    // teams/deActivate
-    // body { "id":1 }
+    // teams/{id}/deactivate
     @PUT
-    @Path("deactivate")
-    public Response deActivate(Team team) {
+    @Path("{id}/deactivate")
+    public Response deActivate(Long teamId, Team team) {
 
-        return service.deActivate(team)
+        return service.deActivate(teamId)
                 .map(t -> Response.status(OK))
                 .orElse(Response.status(NOT_FOUND))
                 .build();
