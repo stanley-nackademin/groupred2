@@ -12,7 +12,6 @@ import java.util.Collection;
 @Entity
 public final class User {
 
-
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
@@ -29,12 +28,7 @@ public final class User {
     @JsonBackReference
     private Team team;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    private Collection<Task> tasks;
-
-    protected User() {
-    }
+    protected User() {}
 
     public User(String firstName, String lastName, String userName, boolean active, Long userNumber) {
 
@@ -44,7 +38,6 @@ public final class User {
         this.active = active;
         this.userNumber = userNumber;
     }
-
 
     public Long getId() {
         return id;
@@ -101,15 +94,4 @@ public final class User {
     public void setTeam(Team team) {
         this.team = team;
     }
-
-
-    public void setTasks(Collection<Task> tasks) {
-        this.tasks = tasks;
-    }
-
-    public Collection<Task> getTasks() {
-        return tasks;
-    }
-
-    //TODO add task / remove task / toString ?
 }

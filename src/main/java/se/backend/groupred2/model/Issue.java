@@ -12,13 +12,8 @@ public class Issue {
     @ManyToOne
     private Task task;
 
-//    @Column(nullable = false)
-//    private String title;
-
     @Column(nullable = false)
-    private String title;
-    @Column(nullable = false)
-    private String description;
+    private String title, description;
 
     protected Issue() {}
 

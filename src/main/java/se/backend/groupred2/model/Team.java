@@ -1,7 +1,6 @@
 package se.backend.groupred2.model;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public final class Team {
@@ -18,8 +17,7 @@ public final class Team {
     @Column(nullable = false)
     private int maxUsers;
 
-    protected Team() {
-    }
+    protected Team() {}
 
     public Team(String name, boolean active, int maxUsers) {
         this.name = name;

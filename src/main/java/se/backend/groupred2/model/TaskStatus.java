@@ -4,6 +4,4 @@ public enum TaskStatus {
     UNSTARTED,
     STARTED,
     DONE;
-
-
 }
