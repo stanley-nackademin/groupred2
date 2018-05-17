@@ -43,14 +43,25 @@ public final class IssueService {
         }).orElseThrow(() -> new InvalidTaskException("Task doesn't exist"));
     }
 
+    //TODO ej klar
     public Optional<Issue> update(Long issueId, Issue issue) {
         Optional<Issue> result = issueRepository.findById(issueId);
 
         return result.map(i -> {
-            i.setDescription(issue.getDescription());
-            issueRepository.save(i);
+            if (!issue.getTitle().equals(null)&& !issue.getDescription().equals(null)) {
+                i.setTitle(issue.getTitle());
+                i.setDescription(issue.getDescription());
+
+            } else if (!issue.getTitle().equals(null))
+                i.setTitle(issue.getTitle());
+
+            else if (!issue.getDescription().equals(null))
+                i.setDescription(issue.getDescription());
+
+            issueRepository.save(result.get());
+
             return result;
-        }).orElseThrow(() -> new InvalidInputException("Issue doesn't exist"));
+        }).orElseThrow(() -> new InvalidInputException("Issue does not exist."));
     }
 
     private void validate(Task task) {
