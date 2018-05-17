@@ -22,6 +22,8 @@ public final class TeamService {
     }
 
     public Team createTeam(Team team) {
+        team.setMaxUsers(10);
+
         return teamRepository.save(team);
     }
 
