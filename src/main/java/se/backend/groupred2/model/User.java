@@ -2,6 +2,9 @@ package se.backend.groupred2.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.sql.Update;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -11,17 +14,18 @@ public final class User {
 
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private String firstName, lastName, userName;
+
     private boolean active;
 
     @Column(nullable = false, unique = true)
     private Long userNumber;
 
-    @ManyToOne //(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     private Team team;
 

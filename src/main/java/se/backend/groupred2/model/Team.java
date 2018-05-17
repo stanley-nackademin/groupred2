@@ -6,22 +6,17 @@ import java.util.List;
 @Entity
 public final class Team {
 
-
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private String name;
 
-    //sÃ¤tt team inactive som default?
     private boolean active;
 
-    //lÃ¤ttare om man nÃ¥gon gÃ¥ng i framtiden vill utÃ¶ka antal users i ett team
     @Column(nullable = false)
     private int maxUsers;
-    @OneToMany
-    List<User> users;
 
     protected Team() {
     }
