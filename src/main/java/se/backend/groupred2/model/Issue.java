@@ -1,7 +1,5 @@
 package se.backend.groupred2.model;
 
-import org.springframework.lang.Nullable;
-
 import javax.persistence.*;
 
 @Entity
@@ -12,20 +10,22 @@ public class Issue {
     private long id;
 
     @ManyToOne
-    @JoinColumn
     private Task task;
 
 //    @Column(nullable = false)
 //    private String title;
 
     @Column(nullable = false)
+    private String title;
+    @Column(nullable = false)
     private String description;
 
     protected Issue() {}
 
-    public Issue(long id, Task task, String description) {
+    public Issue(long id, Task task, String title, String description) {
         this.id = id;
         this.task = task;
+        this.setTitle(title);
         this.description = description;
     }
 
@@ -47,5 +47,13 @@ public class Issue {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

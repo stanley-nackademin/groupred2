@@ -1,6 +1,8 @@
 package se.backend.groupred2.resource;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import se.backend.groupred2.model.Issue;
 import se.backend.groupred2.service.IssueService;
 
