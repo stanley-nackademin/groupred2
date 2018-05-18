@@ -48,15 +48,17 @@ public final class IssueService {
         Optional<Issue> result = issueRepository.findById(issueId);
 
         return result.map(i -> {
-            if (!issue.getTitle().equals(null)&& !issue.getDescription().equals(null)) {
+            if (issue.getTitle() != null&& issue.getDescription() != null) {
                 i.setTitle(issue.getTitle());
                 i.setDescription(issue.getDescription());
 
-            } else if (!issue.getTitle().equals(null))
+            } else if (issue.getTitle() != null) {
                 i.setTitle(issue.getTitle());
 
-            else if (!issue.getDescription().equals(null))
+            } else if (issue.getDescription() != (null)) {
                 i.setDescription(issue.getDescription());
+
+            }
 
             issueRepository.save(result.get());
 
