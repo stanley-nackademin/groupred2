@@ -34,20 +34,6 @@ public final class TaskResource {
         return Response.status(CREATED).header("Location", "Tasks/" + result.getId()).build();
     }
 
-    @POST
-    @Path("{id}/issues")
-    public Response createIssue(@PathParam("id") Long taskId, Issue issue) {
-        Issue result = issueService.createIssue(taskId, issue);
-
-        return Response.status(CREATED).header("Location", "Teams/Issues/" + result.getId()).build();
-    }
-
-    @GET
-    @Path("issues")
-    public Response getAllTasksWithIssues() {
-        return Response.ok(issueService.getAllTasksWithIssues()).build();
-    }
-
     @GET
     @Path("{id}")
     public Response getTask(@PathParam("id") Long id) {
