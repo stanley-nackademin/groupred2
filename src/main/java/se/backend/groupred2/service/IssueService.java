@@ -43,7 +43,7 @@ public final class IssueService {
         }).orElseThrow(() -> new InvalidTaskException("Task doesn't exist"));
     }
 
-    //TODO ej klar
+    //TODO måste kolla igen
     public Optional<Issue> update(Long issueId, Issue issue) {
         Optional<Issue> result = issueRepository.findById(issueId);
 

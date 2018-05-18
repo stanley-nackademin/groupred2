@@ -20,7 +20,7 @@ public class Issue {
     public Issue(long id, Task task, String title, String description) {
         this.id = id;
         this.task = task;
-        this.setTitle(title);
+        this.title = title;
         this.description = description;
     }
 

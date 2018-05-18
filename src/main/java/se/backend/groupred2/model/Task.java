@@ -28,7 +28,6 @@ public final class Task {
         this.title = title;
         this.description = description;
         this.status = status;
-
     }
 
     public Long getId() {

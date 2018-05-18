@@ -78,8 +78,9 @@ public final class TeamService {
         if(teamResult.isPresent() && userResult.isPresent()) {
             User user = userResult.get();
             Team team = teamResult.get();
-            
-            validate(team, user);
+
+
+            validate(team);
             user.setTeam(team);
 
             userRepository.save(user);
@@ -96,13 +97,9 @@ public final class TeamService {
         return userResult;
     }
 
-    private void validate(Team team, User user) {
-        if (userRepository.countByTeam(team) >= team.getMaxUsers()) {
+    private void validate(Team team) {
+        if (userRepository.countByTeam(team) >= team.getMaxUsers())
             throw new InvalidTeamException("Can't add user. Team is full");
-
-        } else if (user.getTeam().getId().equals(team.getId())) {
-            throw new InvalidTeamException("User is already in that team.");
-        }
     }
 }
 
