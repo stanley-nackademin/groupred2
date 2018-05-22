@@ -35,25 +35,25 @@ public final class UserService {
     }
 
 
-    public Optional<User> update(User user) {
+    public Optional<User> update(Long id, User user) {
         validate(user);
-        Optional<User> result = repository.findById(user.getId());
+        Optional<User> result = repository.findById(id);
 
-        result.ifPresent(t -> {
-            t.setFirstName(user.getFirstName());
-            t.setLastName(user.getLastName());
-            t.setUserName(user.getUserName());
-            t.setUserNumber(user.getUserNumber());
-            t.setActive(user.isActive());
-            repository.save(result.get());
+        result.ifPresent(u -> {
+            u.setFirstName(user.getFirstName());
+            u.setLastName(user.getLastName());
+            u.setUserName(user.getUserName());
+            u.setActive(user.isActive());
+
+            repository.save(u);
         });
 
         return result;
     }
 
 
-    public Optional<User> deActivate(User user) {
-        Optional<User> result = repository.findById(user.getId());
+    public Optional<User> deActivate(Long id) {
+        Optional<User> result = repository.findById(id);
 
         result.ifPresent(t -> {
             t.deActivate();

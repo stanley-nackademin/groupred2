@@ -33,10 +33,10 @@ public final class UserResource {
 
     // users/update     vi mÃ¥ste skicka id och user
     @PUT
-    @Path("update")
-    public Response update(User user) {
+    @Path("{id}")
+    public Response update(@PathParam("id") Long id, User user) {
 
-        return service.update(user)
+        return service.update(id, user)
                 .map(t -> Response.status(OK))
                 .orElse(Response.status(NOT_FOUND))
                 .build();
@@ -45,10 +45,10 @@ public final class UserResource {
 
     // users/deactivate         vi mÃ¥ste skicka id bara
     @PUT
-    @Path("deactivate")
-    public Response deActivate(User user) {
+    @Path("{id}/deactivate")
+    public Response deActivate(@PathParam("id") Long id) {
 
-        return service.deActivate(user)
+        return service.deActivate(id)
                 .map(t -> Response.status(OK))
                 .orElse(Response.status(NOT_FOUND))
                 .build();
@@ -58,9 +58,9 @@ public final class UserResource {
     @GET
     public Response getUserByUserNamefirstNameLastName(
             @QueryParam("usernumber") @DefaultValue("0") long usernumber,
-            @QueryParam("userName") @DefaultValue("0") String userName,
-            @QueryParam("firstName") @DefaultValue("0") String firstName,
-            @QueryParam("lastName") @DefaultValue("0") String lastName) {
+            @QueryParam("username") @DefaultValue("0") String userName,
+            @QueryParam("firstname") @DefaultValue("0") String firstName,
+            @QueryParam("lastname") @DefaultValue("0") String lastName) {
         return Response.ok(service.getUserByUserNamefirstNameLastName(usernumber, userName, firstName, lastName)).build();
     }
 
