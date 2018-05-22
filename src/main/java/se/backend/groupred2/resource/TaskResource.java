@@ -1,7 +1,6 @@
 package se.backend.groupred2.resource;
 
 import org.springframework.stereotype.Component;
-import se.backend.groupred2.model.Issue;
 import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.service.IssueService;
@@ -76,7 +75,7 @@ public final class TaskResource {
     }
 
     @PUT
-    @Path("{id}/adduser")
+    @Path("{id}/users/")
     public Response assignTaskToUser(@PathParam("id") Long id, User user) {
         return taskService.assignTaskToUser(id, user.getId())
                 .map(t -> Response.status(NO_CONTENT))

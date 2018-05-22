@@ -16,11 +16,9 @@ import java.util.stream.Collectors;
 @Service
 public final class UserService {
 
-
     private final UserRepository repository;
     private final TeamRepository repositoryTeam;
     private final TaskRepository taskRepository;
-
 
     public UserService(UserRepository repository, TeamRepository repositoryTeam, TaskRepository taskRepository) {
         this.repository = repository;
@@ -34,23 +32,21 @@ public final class UserService {
                 user.getUserName(), user.isActive(), user.getUserNumber()));
     }
 
-
-    public Optional<User> update(User user) {
+    public Optional<User> update(Long id, User user) {
         validate(user);
-        Optional<User> result = repository.findById(user.getId());
+        Optional<User> result = repository.findById(id);
 
-        result.ifPresent(t -> {
-            t.setFirstName(user.getFirstName());
-            t.setLastName(user.getLastName());
-            t.setUserName(user.getUserName());
-            t.setUserNumber(user.getUserNumber());
-            t.setActive(user.isActive());
-            repository.save(result.get());
+        result.ifPresent(u -> {
+            u.setFirstName(user.getFirstName());
+            u.setLastName(user.getLastName());
+            u.setUserName(user.getUserName());
+            u.setActive(user.isActive());
+
+            repository.save(u);
         });
 
         return result;
     }
-
 
     public Optional<User> deActivate(User user) {
         Optional<User> result = repository.findById(user.getId());
@@ -66,7 +62,6 @@ public final class UserService {
 
         return result;
     }
-
 
     public List<Task> getAllTasksByUserId(Long userkId) {
         return taskRepository.findAllByUser_Id(userkId);
@@ -99,23 +94,21 @@ public final class UserService {
         return null;
     }
 
-
-    public List<User> getALLUserByteamId(Long id) {
+    public List<User> getAllUserByteamId(Long id) {
 
         List<User> user = repository.findUsersByTeamId(id);
         if (user.isEmpty())
-            throw new InvalidUserException("den e tom");
+            throw new InvalidUserException("Could not find a user");
 
         return repository.findAll().stream()  //gÃ¶r om detta till en strÃ¶m
                 .filter(t -> t.getTeam().getId().equals(id)) //behÃ¥ll alla teams med det hÃ¤r idt
                 .collect(Collectors.toList()); //gÃ¶r om strÃ¶mmen till en lista
     }
 
-
     private void validate(User user) {
         int UserName = user.getUserName().length();
         if (UserName < 10) {
-            throw new InvalidUserException("UserName är minst än 10 token");
+            throw new InvalidUserException("UserName must have a minimum of 10 characters in it");
         } else if (user.getUserName().isEmpty() && user.getUserName() == null) {
             throw new InvalidUserException("userName is Empty");
 

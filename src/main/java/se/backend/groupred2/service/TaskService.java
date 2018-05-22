@@ -24,7 +24,6 @@ public final class TaskService {
         this.userRepository = userRepository;
     }
 
-    //TODO En task bör endast kunna skapas om status är: UNSTARTED, STARTED eller DONE
     public Task createTask(Task task) {
         validateTask(task);
         return taskRepository.save(new Task(task.getTitle(), task.getDescription(), task.getStatus()));
@@ -43,7 +42,6 @@ public final class TaskService {
         return temp;
     }
 
-    // Kan ändras så att den updaterar mer än bara status. Bör ha mer validates för att se så att rätt saker skickas in.
     public Optional<Task> updateStatus(Long id, Task task) {
         Optional<Task> taskResult = taskRepository.findById(id);
 
@@ -69,7 +67,7 @@ public final class TaskService {
                 throw new InvalidTaskException("That user is not active");
             } else if (taskItems.size() > 4) {
                 throw new InvalidTaskException("To many tasks for that user, Max = 5");
-            } // kolla så user inte redan har samma task?
+            }
 
             Task temp = taskResult.get();
             temp.setUser(userResult.get());
@@ -127,7 +125,7 @@ public final class TaskService {
     private void validateTask(Task task) { //Lägg till empty också?
         if (task.getTitle().isEmpty() || task.getTitle() == null || task.getDescription() == null || task.getStatus() == null) {
             throw new InvalidTaskException("Title, description and status have to have values. Can not leave empty");
-        }  //lägg till så att man kollar om status är korrekt också.
+        }
     }
 
     public void validateStatus(String status) {

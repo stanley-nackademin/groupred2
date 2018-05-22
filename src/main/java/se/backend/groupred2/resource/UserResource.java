@@ -33,10 +33,10 @@ public final class UserResource {
 
     // users/update     vi mÃ¥ste skicka id och user
     @PUT
-    @Path("update")
-    public Response update(User user) {
+    @Path("{id}")
+    public Response update(@PathParam("id") Long id, User user) {
 
-        return service.update(user)
+        return service.update(id, user)
                 .map(t -> Response.status(OK))
                 .orElse(Response.status(NOT_FOUND))
                 .build();
@@ -68,7 +68,7 @@ public final class UserResource {
     @GET
     @Path("getByTeamId/{id}")
     public List<User> getAllUserByTeamId(@PathParam("id") Long teamId) {
-        return service.getALLUserByteamId(teamId);
+        return service.getAllUserByteamId(teamId);
     }
 
 

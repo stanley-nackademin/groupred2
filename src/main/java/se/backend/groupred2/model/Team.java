@@ -1,15 +1,12 @@
 package se.backend.groupred2.model;
 
-import org.hibernate.annotations.ColumnDefault;
-
 import javax.persistence.*;
-import javax.ws.rs.DefaultValue;
 
 @Entity
 public final class Team {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -35,6 +32,10 @@ public final class Team {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
