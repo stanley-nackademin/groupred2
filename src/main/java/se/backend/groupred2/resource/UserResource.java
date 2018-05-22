@@ -30,8 +30,6 @@ public final class UserResource {
         return Response.status(CREATED).header("Location", "Users/" + result.getId()).build();
     }
 
-
-    // users/update     vi mÃ¥ste skicka id och user
     @PUT
     @Path("{id}")
     public Response update(@PathParam("id") Long id, User user) {
@@ -42,8 +40,6 @@ public final class UserResource {
                 .build();
     }
 
-
-    // users/deactivate         vi mÃ¥ste skicka id bara
     @PUT
     @Path("{id}/deactivate")
     public Response deActivate(@PathParam("id") Long id) {
@@ -54,7 +50,6 @@ public final class UserResource {
                 .build();
     }
 
-
     @GET
     public Response getUserByUserNamefirstNameLastName(
             @QueryParam("usernumber") @DefaultValue("0") long usernumber,
@@ -63,7 +58,6 @@ public final class UserResource {
             @QueryParam("lastname") @DefaultValue("0") String lastName) {
         return Response.ok(service.getUserByUserNamefirstNameLastName(usernumber, userName, firstName, lastName)).build();
     }
-
 
     @GET
     @Path("getByTeamId/{id}")

@@ -47,7 +47,7 @@ public final class TaskService {
 
         if (taskResult.isPresent()) {
             Task updatedTask = taskResult.get();
-
+            
             updatedTask.setStatus(task.getStatus());
             taskRepository.save(updatedTask);
         } else {
@@ -122,7 +122,7 @@ public final class TaskService {
         return allTasks;
     }
 
-    private void validateTask(Task task) { //Lägg till empty också?
+    private void validateTask(Task task) {
         if (task.getTitle().isEmpty() || task.getTitle() == null || task.getDescription() == null || task.getStatus() == null) {
             throw new InvalidTaskException("Title, description and status have to have values. Can not leave empty");
         }

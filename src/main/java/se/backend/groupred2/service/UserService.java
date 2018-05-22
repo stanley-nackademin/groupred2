@@ -5,7 +5,6 @@ import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
-import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidUserException;
 
@@ -16,15 +15,12 @@ import java.util.stream.Collectors;
 @Service
 public final class UserService {
 
-
     private final UserRepository repository;
-    private final TeamRepository repositoryTeam;
     private final TaskRepository taskRepository;
 
 
-    public UserService(UserRepository repository, TeamRepository repositoryTeam, TaskRepository taskRepository) {
+    public UserService(UserRepository repository, TaskRepository taskRepository) {
         this.repository = repository;
-        this.repositoryTeam = repositoryTeam;
         this.taskRepository = taskRepository;
     }
 
@@ -33,7 +29,6 @@ public final class UserService {
         return repository.save(new User(user.getFirstName(), user.getLastName(),
                 user.getUserName(), user.isActive(), user.getUserNumber()));
     }
-
 
     public Optional<User> update(Long id, User user) {
         validate(user);
@@ -51,7 +46,6 @@ public final class UserService {
         return result;
     }
 
-
     public Optional<User> deActivate(Long id) {
         Optional<User> result = repository.findById(id);
 
@@ -66,7 +60,6 @@ public final class UserService {
 
         return result;
     }
-
 
     public List<Task> getAllTasksByUserId(Long userkId) {
         return taskRepository.findAllByUser_Id(userkId);
@@ -99,23 +92,21 @@ public final class UserService {
         return null;
     }
 
-
-    public List<User> getALLUserByteamId(Long id) {
+    public List<User> getAllUserByteamId(Long id) {
 
         List<User> user = repository.findUsersByTeamId(id);
         if (user.isEmpty())
-            throw new InvalidUserException("den e tom");
+            throw new InvalidUserException("Could not find any user");
 
-        return repository.findAll().stream()  //gÃ¶r om detta till en strÃ¶m
-                .filter(t -> t.getTeam().getId().equals(id)) //behÃ¥ll alla teams med det hÃ¤r idt
-                .collect(Collectors.toList()); //gÃ¶r om strÃ¶mmen till en lista
+        return repository.findAll().stream()
+                .filter(t -> t.getTeam().getId().equals(id))
+                .collect(Collectors.toList());
     }
-
 
     private void validate(User user) {
         int UserName = user.getUserName().length();
         if (UserName < 10) {
-            throw new InvalidUserException("UserName är minst än 10 token");
+            throw new InvalidUserException("UserName must be atleast 10 characters");
         } else if (user.getUserName().isEmpty() && user.getUserName() == null) {
             throw new InvalidUserException("userName is Empty");
 
