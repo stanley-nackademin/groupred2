@@ -5,7 +5,6 @@ import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
-import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidUserException;
 
@@ -18,13 +17,11 @@ public final class UserService {
 
 
     private final UserRepository repository;
-    private final TeamRepository repositoryTeam;
     private final TaskRepository taskRepository;
 
 
-    public UserService(UserRepository repository, TeamRepository repositoryTeam, TaskRepository taskRepository) {
+    public UserService(UserRepository repository, TaskRepository taskRepository) {
         this.repository = repository;
-        this.repositoryTeam = repositoryTeam;
         this.taskRepository = taskRepository;
     }
 
@@ -56,6 +53,7 @@ public final class UserService {
         Optional<User> result = repository.findById(user.getId());
 
         result.ifPresent(t -> {
+            checkIfActive(t);
             t.deActivate();
             List<Task> tasks = getAllTasksByUserId(result.get().getId());
             tasks.forEach(task -> task.setStatus(TaskStatus.UNSTARTED));
@@ -67,6 +65,11 @@ public final class UserService {
         return result;
     }
 
+
+    private void checkIfActive(User user) {
+        if (!user.isActive())
+            throw new InvalidUserException("User is already inactive.");
+    }
 
     public List<Task> getAllTasksByUserId(Long userkId) {
         return taskRepository.findAllByUser_Id(userkId);
@@ -106,9 +109,9 @@ public final class UserService {
         if (user.isEmpty())
             throw new InvalidUserException("den e tom");
 
-        return repository.findAll().stream()  //gÃ¶r om detta till en strÃ¶m
-                .filter(t -> t.getTeam().getId().equals(id)) //behÃ¥ll alla teams med det hÃ¤r idt
-                .collect(Collectors.toList()); //gÃ¶r om strÃ¶mmen till en lista
+        return repository.findAll().stream()
+                .filter(t -> t.getTeam().getId().equals(id))
+                .collect(Collectors.toList());
     }
 
 

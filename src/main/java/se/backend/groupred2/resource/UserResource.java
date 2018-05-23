@@ -31,7 +31,7 @@ public final class UserResource {
     }
 
 
-    // users/update     vi mÃ¥ste skicka id och user
+    // users/update     vi måste skicka id och user
     @PUT
     @Path("update")
     public Response update(User user) {

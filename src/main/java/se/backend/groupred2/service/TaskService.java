@@ -43,7 +43,6 @@ public final class TaskService {
         return temp;
     }
 
-    // Kan ändras så att den updaterar mer än bara status. Bör ha mer validates för att se så att rätt saker skickas in.
     public Optional<Task> updateStatus(Long id, Task task) {
         Optional<Task> taskResult = taskRepository.findById(id);
 
