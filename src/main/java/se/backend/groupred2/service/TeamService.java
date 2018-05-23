@@ -5,7 +5,9 @@ import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
+import se.backend.groupred2.service.exceptions.InvalidInputException;
 import se.backend.groupred2.service.exceptions.InvalidTeamException;
+import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.Optional;
 
@@ -20,6 +22,8 @@ public final class TeamService {
     }
 
     public Team createTeam(Team team) {
+        team.setMaxUsers(10);
+
         return teamRepository.save(team);
     }
 
@@ -55,29 +59,47 @@ public final class TeamService {
         return teamRepository.findAll();
     }
 
-    public Optional<User> addUser(Long teamId, User user) {
-        Optional<Team> teamResult = teamRepository.findById(teamId);
-        Optional<User> userResult = userRepository.findById(user.getId());
+    public Team getTeam(Long teamId) {
+        Optional<Team> result = teamRepository.findById(teamId);
+        Team team;
 
-        if (teamResult.isPresent() && userResult.isPresent()) {
-            user = userResult.get();
+        if(result.isPresent())
+            team = result.get();
+        else
+            throw new InvalidTeamException("Team does not exist.");
+
+        return team;
+    }
+
+    public Optional<User> addUser(Long teamId, Long userId) {
+        Optional<Team> teamResult = teamRepository.findById(teamId);
+        Optional<User> userResult = userRepository.findById(userId);
+
+        if(teamResult.isPresent() && userResult.isPresent()) {
+            User user = userResult.get();
             Team team = teamResult.get();
+
 
             validate(team);
             user.setTeam(team);
 
             userRepository.save(user);
-        }
+
+        } else if(!teamResult.isPresent() && !userResult.isPresent()) {
+            throw new InvalidInputException("Team and User does not exist");
+
+        } else if(!teamResult.isPresent()) {
+            throw new InvalidTeamException("Team does not exist.");
+
+        } else
+            throw new InvalidUserException("User does not exist");
 
         return userResult;
     }
 
-
     private void validate(Team team) {
-        if (userRepository.countByTeam(team) >= team.getMaxUsers()) {
+        if (userRepository.countByTeam(team) >= team.getMaxUsers())
             throw new InvalidTeamException("Can't add user. Team is full");
-        }
     }
-
 }
 

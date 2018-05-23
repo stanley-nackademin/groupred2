@@ -1,36 +1,29 @@
 package se.backend.groupred2.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 @Entity
 public final class User {
 
-
     @Id
-    @GeneratedValue  //(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private String firstName, lastName, userName;
+
     private boolean active;
 
     @Column(nullable = false, unique = true)
     private Long userNumber;
 
-    @ManyToOne //(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     private Team team;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    private Collection<Task> tasks;
-
-    protected User() {
-    }
+    protected User() {}
 
     public User(String firstName, String lastName, String userName, boolean active, Long userNumber) {
 
@@ -41,9 +34,12 @@ public final class User {
         this.userNumber = userNumber;
     }
 
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -97,15 +93,4 @@ public final class User {
     public void setTeam(Team team) {
         this.team = team;
     }
-
-
-    public void setTasks(Collection<Task> tasks) {
-        this.tasks = tasks;
-    }
-
-    public Collection<Task> getTasks() {
-        return tasks;
-    }
-
-    //TODO add task / remove task / toString ?
 }

@@ -8,7 +8,7 @@ import javax.persistence.*;
 public final class Task {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -22,16 +22,13 @@ public final class Task {
     @JsonBackReference
     private User user;
 
-    protected Task() {
-    }
+    protected Task() {}
 
     public Task(String title, String description, TaskStatus status) {
         this.title = title;
         this.description = description;
         this.status = status;
-
     }
-
 
     public Long getId() {
         return id;
