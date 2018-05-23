@@ -15,7 +15,8 @@ public class Issue {
     @Column(nullable = false)
     private String title, description;
 
-    protected Issue() {}
+    protected Issue() {
+    }
 
     public Issue(long id, Task task, String title, String description) {
         this.id = id;

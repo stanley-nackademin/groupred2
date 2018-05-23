@@ -22,7 +22,8 @@ public final class Task {
     @JsonBackReference
     private User user;
 
-    protected Task() {}
+    protected Task() {
+    }
 
     public Task(String title, String description, TaskStatus status) {
         this.title = title;

@@ -63,7 +63,7 @@ public final class TeamService {
         Optional<Team> result = teamRepository.findById(teamId);
         Team team;
 
-        if(result.isPresent())
+        if (result.isPresent())
             team = result.get();
         else
             throw new InvalidTeamException("Team does not exist.");
@@ -75,7 +75,7 @@ public final class TeamService {
         Optional<Team> teamResult = teamRepository.findById(teamId);
         Optional<User> userResult = userRepository.findById(userId);
 
-        if(teamResult.isPresent() && userResult.isPresent()) {
+        if (teamResult.isPresent() && userResult.isPresent()) {
             User user = userResult.get();
             Team team = teamResult.get();
 
@@ -85,10 +85,10 @@ public final class TeamService {
 
             userRepository.save(user);
 
-        } else if(!teamResult.isPresent() && !userResult.isPresent()) {
+        } else if (!teamResult.isPresent() && !userResult.isPresent()) {
             throw new InvalidInputException("Team and User does not exist");
 
-        } else if(!teamResult.isPresent()) {
+        } else if (!teamResult.isPresent()) {
             throw new InvalidTeamException("Team does not exist.");
 
         } else

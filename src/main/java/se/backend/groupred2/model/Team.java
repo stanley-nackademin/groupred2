@@ -18,7 +18,8 @@ public final class Team {
     @Column(nullable = false, columnDefinition = "int default 10")
     private int maxUsers;
 
-    protected Team() {}
+    protected Team() {
+    }
 
     public Team(String name, boolean active, int maxUsers) {
         this.name = name;

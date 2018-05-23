@@ -23,7 +23,8 @@ public final class User {
     @JsonBackReference
     private Team team;
 
-    protected User() {}
+    protected User() {
+    }
 
     public User(String firstName, String lastName, String userName, boolean active, Long userNumber) {
 

@@ -24,7 +24,9 @@ public final class TeamResource {
 
     @GET
     @Path("{id}")
-    public Response getTeam(@PathParam("id") Long id) { return Response.ok(service.getTeam(id)).build(); }
+    public Response getTeam(@PathParam("id") Long id) {
+        return Response.ok(service.getTeam(id)).build();
+    }
 
     @GET
     public Response getAllTeams() {

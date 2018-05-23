@@ -47,7 +47,7 @@ public final class TaskService {
 
         if (taskResult.isPresent()) {
             Task updatedTask = taskResult.get();
-            
+
             updatedTask.setStatus(task.getStatus());
             taskRepository.save(updatedTask);
         } else {
