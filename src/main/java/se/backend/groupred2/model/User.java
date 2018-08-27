@@ -94,4 +94,16 @@ public final class User {
     public void setTeam(Team team) {
         this.team = team;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", userName='" + userName + '\'' +
+                ", active=" + active +
+                ", userNumber=" + userNumber +
+                '}';
+    }
 }
