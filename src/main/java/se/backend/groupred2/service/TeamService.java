@@ -97,7 +97,7 @@ public final class TeamService {
         return userResult;
     }
 
-    private void validate(Team team) {
+    protected void validate(Team team) {
         if (userRepository.countByTeam(team) >= team.getMaxUsers())
             throw new InvalidTeamException("Can't add user. Team is full");
     }
