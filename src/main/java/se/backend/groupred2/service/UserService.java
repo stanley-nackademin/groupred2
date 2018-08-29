@@ -62,7 +62,7 @@ public final class UserService {
         return result;
     }
 
-    private void checkIfActive(User user) {
+    public void checkIfActive(User user) {
         if (!user.isActive())
             throw new InvalidTeamException("User is already inactive.");
     }

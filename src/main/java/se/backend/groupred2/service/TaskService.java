@@ -48,6 +48,8 @@ public final class TaskService {
         if (taskResult.isPresent()) {
             Task updatedTask = taskResult.get();
 
+
+            checkStatus(updatedTask, task);         //här kommer metodanrop PENDING-STARTED-valideringen av workItem status
             updatedTask.setStatus(task.getStatus());
             taskRepository.save(updatedTask);
         } else {
@@ -129,9 +131,38 @@ public final class TaskService {
     }
 
     public void validateStatus(String status) {
-        if (!status.equals("UNSTARTED") && !status.equals("STARTED") && !status.equals("DONE")) {
+        if (!status.equals("UNSTARTED") && !status.equals("STARTED") && !status.equals("DONE") && !status.equals("PENDING") ) {
             throw new InvalidTaskException("Incorrect status, have to be UNSTARTED, STARTED or DONE");
         }
     }
+
+    //workItem status PENDING-STARTED valideringsmetod
+    public void checkStatus(Task oldTask, Task newTask ){
+        String oldStatus = oldTask.getStatus().toString();
+        String newStatus = newTask.getStatus().toString();
+
+        if (oldStatus.equals("DONE")){
+            if(newStatus.equals("PENDING")){
+                throw new InvalidTaskException("Incorrect status, cannot change from DONE to PENDING");
+            }
+        }
+        else if(oldStatus.equals("PENDING")){
+            if(newStatus.equals("DONE")){
+                throw new InvalidTaskException("Incorrect status, cannot change from PENDING to DONE");
+            }
+            else if(newStatus.equals("UNSTARTED")){
+                throw new InvalidTaskException("Incorrect status, cannot change from PENDING to UNSTARTED");
+            }
+        }
+        else if(oldStatus.equals("UNSTARTED")) {
+            if(newStatus.equals("PENDING")){
+                throw new InvalidTaskException("Incorrect status, cannot change from UNSTARTED to PENDING");
+            }
+        }
+
+    }
+
+
+
 
 }
