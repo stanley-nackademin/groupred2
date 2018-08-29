@@ -16,9 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -35,6 +33,8 @@ public class UserServiceTest {
 
     Team team = new Team("nameTeam", true, 10);
     ArrayList<User> users = new ArrayList<>();
+    User user = new User("myFirstname","myLastname","MyUsernameee",true,112233L);
+
     @Before
     public void setUp() {
         teamRepository.save(team);
@@ -46,8 +46,15 @@ public class UserServiceTest {
             s.setTeam(team);
             userRepository.save(s);
         }
+
+        userRepository.save(user);
     }
 
+    @Test
+    public void createUserTest()throws Exception{
+        List<User> result = userRepository.findByUserNumber(112233L);
+        assertEquals(!result.isEmpty(), !result.isEmpty());
+    }
 
     @Test
     public void getAllUserByteamIdTest() throws Exception{
@@ -65,6 +72,7 @@ public class UserServiceTest {
             userRepository.delete(s);
         }
         teamRepository.delete(team);
+        userRepository.delete(user);
     }
 
 }
