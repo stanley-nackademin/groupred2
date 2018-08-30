@@ -10,13 +10,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
 import se.backend.groupred2.repository.TaskRepository;
+import se.backend.groupred2.service.exceptions.InvalidTaskException;
+
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TaskServiceTest {
+
+    private Task taskForEquals;
+    private Task taskForNotEquals;
+    private Task invalidTaskNull;
+    private Task invalidTask;
 
     @Autowired
     TaskService taskService;
@@ -24,26 +32,49 @@ public class TaskServiceTest {
     @Autowired
     TaskRepository taskRepository;
 
-    Task task;
-
     @Before
     public void setUp() {
-        task = new Task("TaskTest", "test the createTask method", TaskStatus.UNSTARTED);
+        taskForEquals = new Task("taskForEquals", "test the createTask method", TaskStatus.UNSTARTED);
+        taskForNotEquals = new Task("taskForNotEquals", "test the createTask method", TaskStatus.UNSTARTED);
+        invalidTaskNull = new Task("InvalidTask", "this task has invalid data", null);
+        invalidTask = new Task("InvalidTaskNotNull", "this task has invalid data that is not null", TaskStatus.TEST);
     }
 
-    @Test
-    public void createTaskTest() throws Exception {
-        taskService.createTask(task);
-        task.setId(1L);
 
-        Optional<Task> result = taskRepository.findById(task.getId());
+    @Test
+    public void createTaskTestValidData() {
+        taskForEquals.setId(1L);
+        taskService.createTask(taskForEquals);
+
+        taskForNotEquals.setId(2L);
+        taskService.createTask(taskForNotEquals);
+
+        Optional<Task> result = taskRepository.findById(taskForEquals.getId());
         Task taskFromDatabase = result.get();
 
-        assertEquals(task.toString(), taskFromDatabase.toString());
+        assertEquals(taskForEquals.toString(), taskFromDatabase.toString());
+        assertNotEquals(taskForNotEquals.toString(), taskFromDatabase.toString());
+    }
+
+    /*Test passes when InvalidTaskException is thrown
+     * which happens when TaskStatus = null*/
+    @Test(expected = InvalidTaskException.class)
+    public void createTaskTestInvalidData() {
+        taskService.validateTask(invalidTaskNull);
+    }
+
+    /*Test passes when InvalidTaskException is thrown
+     * which happens when TaskStatus has incorrect status type*/
+    @Test(expected = InvalidTaskException.class)
+    public void createTaskTestInvalidDataString() {
+        taskService.validateStatus(invalidTask.getStatus().name());
     }
 
     @After
     public void tearDown(){
-        taskRepository.delete(task);
+        taskRepository.delete(taskForEquals);
+        taskRepository.delete(taskForNotEquals);
+        taskRepository.delete(invalidTaskNull);
+        taskRepository.delete(invalidTask);
     }
 }

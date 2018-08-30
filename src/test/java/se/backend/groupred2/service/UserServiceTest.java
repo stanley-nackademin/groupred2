@@ -11,6 +11,7 @@ import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
+import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +51,18 @@ public class UserServiceTest {
 
 
     @Test
-    public void getAllUserByteamIdTest() throws Exception{
+    public void getAllUserByteamIdTest() {
         List<User> usersFromRepo = userService.getAllUserByteamId(teamRepository.findByName("nameTeam").get().getId());
         assertEquals(usersFromRepo.get(1).toString(), users.get(1).toString());
         assertEquals(usersFromRepo.get(2).toString(), users.get(2).toString());
         assertEquals(usersFromRepo.get(3).toString(), users.get(3).toString());
         assertNotEquals(usersFromRepo.get(2).toString(), users.get(3).toString());
         assertNotEquals(usersFromRepo.get(1).toString(), users.get(4).toString());
+    }
+
+    @Test(expected = InvalidUserException.class)
+    public void getAllUsersByTeamIdInvalidDatatTest(){
+        List<User> emptyUserList = userService.getAllUserByteamId(10000L);
     }
 
     @After

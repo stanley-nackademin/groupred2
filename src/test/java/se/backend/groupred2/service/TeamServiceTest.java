@@ -49,7 +49,7 @@ public class TeamServiceTest {
      * PASSES if InvalidTeamException is thrown
      * which happens when there are more than 9 users in the requested team.*/
     @Test(expected = InvalidTeamException.class)
-    public void maxUserLimitValidationTest() throws Exception {
+    public void maxUserLimitValidationTest() {
         Optional<Team> result = teamRepository.findByName("fullTeam");
         Team team = result.get();
         teamService.validate(team);
