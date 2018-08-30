@@ -3,10 +3,13 @@ package se.backend.groupred2.service;
 import org.springframework.stereotype.Service;
 import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
+import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
+import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidTaskException;
+import se.backend.groupred2.service.exceptions.InvalidTeamException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +21,12 @@ public final class TaskService {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final TeamRepository teamRepository;
 
-    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository, TeamRepository teamRepository) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
+        this.teamRepository = teamRepository;
     }
 
     public Task createTask(Task task) {
@@ -112,17 +117,27 @@ public final class TaskService {
     }
 
     public List<Task> getAllTasksByTeamId(Long teamId) {
-        List<User> userResult = userRepository.findUsersByTeamId(teamId);
-        if (userResult.isEmpty()) {
-            throw new InvalidTaskException("Could not find any users for that team");
-        }
-        List<Task> allTasks = new ArrayList<>();
-        userResult.forEach(user -> allTasks.addAll(taskRepository.findAllTaskByUserId(user.getId())));
+        Optional<Team> result = teamRepository.findById(teamId);
+        Team team;
+        if(result.isPresent()){
+            team = result.get();
+            List<User> userResult = userRepository.findUsersByTeams(team);
 
-        return allTasks;
+            if (userResult.isEmpty()) {
+                throw new InvalidTaskException("Could not find any users for that team");
+            }
+
+            List<Task> allTasks = new ArrayList<>();
+            userResult.forEach(user -> allTasks.addAll(taskRepository.findAllTaskByUserId(user.getId())));
+
+            return allTasks;
+
+        } else {
+            throw new InvalidTeamException("Team not found from given id");
+        }
     }
 
-    private void validateTask(Task task) {
+    protected void validateTask(Task task) {
         if (task.getTitle().isEmpty() || task.getTitle() == null || task.getDescription() == null || task.getStatus() == null) {
             throw new InvalidTaskException("Title, description and status have to have values. Can not leave empty");
         }

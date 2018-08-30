@@ -14,6 +14,7 @@ import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidTeamException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(SpringRunner.class)
@@ -21,26 +22,34 @@ import java.util.Optional;
 public class TeamServiceTest {
 
     @Autowired
-    TeamService teamService;
+    private TeamService teamService;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    TeamRepository teamRepository;
+    private TeamRepository teamRepository;
 
-    Team fullTeam = new Team("fullTeam", true, 10);
-    ArrayList<User> users = new ArrayList<>();
+    private Team fullTeam;
+    private ArrayList<User> users = new ArrayList<>();
+    List<User> usersFromDb;
 
     @Before
     public void setUp() {
+        fullTeam = new Team("fullTeam", true, 10);
+        fullTeam.setId(1L);
         teamRepository.save(fullTeam);
 
         for (int i = 0; i < 10; i++){
             users.add(new User("user"+i, "firstName"+i, "lastName"+i, true, 1000L+i));
         }
         for (User s: users) {
-            s.setTeam(fullTeam);
+            userRepository.save(s);
+        }
+
+        usersFromDb = userRepository.findAll();
+        for (User s: usersFromDb) {
+            s.addTeam(fullTeam);
             userRepository.save(s);
         }
     }
@@ -49,7 +58,7 @@ public class TeamServiceTest {
      * PASSES if InvalidTeamException is thrown
      * which happens when there are more than 9 users in the requested team.*/
     @Test(expected = InvalidTeamException.class)
-    public void maxUserLimitValidationTest() throws Exception {
+    public void maxUserLimitValidationTest() {
         Optional<Team> result = teamRepository.findByName("fullTeam");
         Team team = result.get();
         teamService.validate(team);

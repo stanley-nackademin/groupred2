@@ -3,8 +3,10 @@ package se.backend.groupred2.service;
 import org.springframework.stereotype.Service;
 import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
+import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
+import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidTeamException;
 import se.backend.groupred2.service.exceptions.InvalidUserException;
@@ -18,11 +20,13 @@ public final class UserService {
 
     private final UserRepository repository;
     private final TaskRepository taskRepository;
+    private final TeamRepository teamRepository;
 
 
-    public UserService(UserRepository repository, TaskRepository taskRepository) {
+    public UserService(UserRepository repository, TaskRepository taskRepository, TeamRepository teamRepository) {
         this.repository = repository;
         this.taskRepository = taskRepository;
+        this.teamRepository = teamRepository;
     }
 
     public User createUser(User user) {
@@ -99,14 +103,19 @@ public final class UserService {
     }
 
     public List<User> getAllUserByteamId(Long id) {
+        Optional<Team> result = teamRepository.findById(id);
+        List<User> users;
+        if(result.isPresent()){
+            Team team = result.get();
+            users = repository.findUsersByTeams(team);
+            if (users.isEmpty())
+                throw new InvalidUserException("Could not find any user");
 
-        List<User> user = repository.findUsersByTeamId(id);
-        if (user.isEmpty())
-            throw new InvalidUserException("Could not find any user");
+        }else {
+            throw new InvalidUserException("Could not find team from given team-ID");
+        }
 
-        return repository.findAll().stream()
-                .filter(t -> t.getTeam().getId().equals(id))
-                .collect(Collectors.toList());
+        return users;
     }
 
     private void validate(User user) {

@@ -11,14 +11,13 @@ import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
+import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,8 +32,9 @@ public class UserServiceTest {
     @Autowired
     UserRepository userRepository;
 
-    Team team = new Team("nameTeam", true, 10);
-    ArrayList<User> users = new ArrayList<>();
+    private Team team = new Team("nameTeam", true, 10);
+    private ArrayList<User> users = new ArrayList<>();
+
     @Before
     public void setUp() {
         teamRepository.save(team);
@@ -43,20 +43,29 @@ public class UserServiceTest {
             users.add(new User("user"+i, "firstName"+i, "lastName"+i, true, 1000L+i));
         }
         for (User s: users) {
-            s.setTeam(team);
+            userRepository.save(s);
+        }
+
+        List<User> usersFromDb = userRepository.findAll();
+        for (User s: usersFromDb) {
+            s.addTeam(team);
             userRepository.save(s);
         }
     }
 
-
     @Test
-    public void getAllUserByteamIdTest() throws Exception{
+    public void getAllUserByTeamIdTest(){
         List<User> usersFromRepo = userService.getAllUserByteamId(teamRepository.findByName("nameTeam").get().getId());
         assertEquals(usersFromRepo.get(1).toString(), users.get(1).toString());
         assertEquals(usersFromRepo.get(2).toString(), users.get(2).toString());
         assertEquals(usersFromRepo.get(3).toString(), users.get(3).toString());
         assertNotEquals(usersFromRepo.get(2).toString(), users.get(3).toString());
         assertNotEquals(usersFromRepo.get(1).toString(), users.get(4).toString());
+    }
+
+    @Test(expected = InvalidUserException.class)
+    public void getAllUsersByTeamIdInvalidDatatTest(){
+        List<User> emptyUserList = userService.getAllUserByteamId(10000L);
     }
 
     @After
@@ -66,5 +75,4 @@ public class UserServiceTest {
         }
         teamRepository.delete(team);
     }
-
 }

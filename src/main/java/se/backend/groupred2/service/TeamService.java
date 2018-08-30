@@ -81,8 +81,8 @@ public final class TeamService {
 
 
             validate(team);
-            user.setTeam(team);
-
+            team.addUser(user);
+            user.addTeam(team);
             userRepository.save(user);
 
         } else if (!teamResult.isPresent() && !userResult.isPresent()) {
@@ -98,7 +98,7 @@ public final class TeamService {
     }
 
     protected void validate(Team team) {
-        if (userRepository.countByTeam(team) >= team.getMaxUsers())
+        if (team.getAllUsers().size() >= team.getMaxUsers())
             throw new InvalidTeamException("Can't add user. Team is full");
     }
 }
