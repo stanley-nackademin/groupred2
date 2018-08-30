@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 @Service
 public final class UserService {
 
@@ -32,16 +34,36 @@ public final class UserService {
     }
 
     public Optional<User> update(Long id, User user) {
-        validate(user);
+
         Optional<User> result = repository.findById(id);
 
-        result.ifPresent(u -> {
-            u.setFirstName(user.getFirstName());
-            u.setLastName(user.getLastName());
-            u.setUserName(user.getUserName());
-            u.setActive(user.isActive());
-            repository.save(u);
-        });
+        if (result.isPresent()) {
+            User updatedUser = result.get();
+
+            if (!isBlank(user.getFirstName())) {
+                updatedUser.setFirstName(user.getFirstName());
+            }
+
+            if (!isBlank(user.getLastName())) {
+                updatedUser.setLastName(user.getLastName());
+            }
+
+            if (user.getIsActive() != null) {
+                updatedUser.setIsActive(user.getIsActive());
+            }
+
+            if (user.getTeam() != null && !isBlank(user.getTeam().getId().toString())) {
+                updatedUser.setTeam(user.getTeam());
+            }
+
+            if(!isBlank(user.getUserName())){
+                if (user.getUserName().length() < 10) {
+                    throw new InvalidUserException("UserName must be atleast 10 characters");
+                }
+            }
+
+            return Optional.of(repository.save(updatedUser));
+        }
 
         return result;
     }
