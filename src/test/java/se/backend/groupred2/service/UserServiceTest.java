@@ -16,9 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -35,12 +33,15 @@ public class UserServiceTest {
 
     Team team = new Team("nameTeam", true, 10);
     ArrayList<User> users = new ArrayList<>();
+    User jonasUser;
     @Before
     public void setUp() {
         teamRepository.save(team);
+        jonasUser = new User("firstName", "lastName", "atleastTenCharacters", true, 1337L);
+        userRepository.save(jonasUser);
 
         for (int i = 0; i < 5; i++){
-            users.add(new User("user"+i, "firstName"+i, "lastName"+i, true, 1000L+i));
+            users.add(new User("firstName"+i, "lastName"+i, "atleastTenCharacters"+i, true, 1000L+i));
         }
         for (User s: users) {
             s.setTeam(team);
@@ -59,12 +60,30 @@ public class UserServiceTest {
         assertNotEquals(usersFromRepo.get(1).toString(), users.get(4).toString());
     }
 
+    //jonas
+    @Test
+    public void updateUserTest(){
+        User toUpdateUser = userService.getUserByUserNamefirstNameLastName(1337L, null, null, null).get(0);
+        String previousFirstName = toUpdateUser.getFirstName();
+        toUpdateUser.setFirstName("newName");
+        assertTrue(userService.update(toUpdateUser.getId(), toUpdateUser).isPresent());
+        assertFalse(userService.update(0L, toUpdateUser).isPresent());
+
+        assertNotEquals(previousFirstName, userService.getUserByUserNamefirstNameLastName(1337L, null, null, null).get(0).getFirstName());
+        assertEquals("newName", userService.getUserByUserNamefirstNameLastName(1337L, null, null, null).get(0).getFirstName());
+
+
+
+
+    }
+
     @After
     public void tearDown(){
         for (User s: users) {
             userRepository.delete(s);
         }
         teamRepository.delete(team);
+        userRepository.delete(jonasUser);
     }
 
 }
