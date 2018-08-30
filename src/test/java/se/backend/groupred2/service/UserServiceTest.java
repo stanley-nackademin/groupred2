@@ -36,22 +36,25 @@ public class UserServiceTest {
 
     Team team = new Team("nameTeam", true, 10);
     ArrayList<User> users = new ArrayList<>();
+    User testUser;
     @Before
     public void setUp() {
         teamRepository.save(team);
 
         for (int i = 0; i < 5; i++){
-            users.add(new User("user"+i, "firstName"+i, "lastName"+i, true, 1000L+i));
+            users.add(new User("activeUser"+i, "firstName"+i, "lastName"+i, true, 1000L+i));
         }
         for (User s: users) {
             s.setTeam(team);
             userRepository.save(s);
         }
+
+        testUser = userRepository.findById(users.get(0).getId()).get();
     }
 
 
     @Test
-    public void getAllUserByteamIdTest() {
+    public void getAllUserByteamIdTest() throws Exception{
         List<User> usersFromRepo = userService.getAllUserByteamId(teamRepository.findByName("nameTeam").get().getId());
         assertEquals(usersFromRepo.get(1).toString(), users.get(1).toString());
         assertEquals(usersFromRepo.get(2).toString(), users.get(2).toString());
@@ -60,9 +63,32 @@ public class UserServiceTest {
         assertNotEquals(usersFromRepo.get(1).toString(), users.get(4).toString());
     }
 
-    @Test(expected = InvalidUserException.class)
-    public void getAllUsersByTeamIdInvalidDatatTest(){
-        List<User> emptyUserList = userService.getAllUserByteamId(10000L);
+    @Test
+    public void updateUserWithValidInputTest(){
+        User updatedUser = new User("fname", "lname", "someusername", false, testUser.getUserNumber());
+
+        userService.update(testUser.getId(), updatedUser);
+
+        User checkUser = userRepository.findById(testUser.getId()).get();
+
+        assertEquals(checkUser.getFirstName(), updatedUser.getFirstName());
+        assertNotEquals(checkUser.getFirstName(), testUser.getFirstName());
+
+        assertEquals(checkUser.getLastName(), updatedUser.getLastName());
+        assertNotEquals(checkUser.getLastName(), testUser.getLastName());
+
+        assertEquals(checkUser.getUserName(), updatedUser.getUserName());
+        assertNotEquals(checkUser.getUserName(), testUser.getUserName());
+
+        assertEquals(checkUser.isActive(), updatedUser.isActive());
+        assertNotEquals(checkUser.isActive(), testUser.isActive());
+    }
+
+    @Test (expected = InvalidUserException.class)
+    public void updateUserWithInvalidInputTest(){
+        User updatedUser = new User("fn", "ln", "uname", false, testUser.getUserNumber());
+
+        userService.update(testUser.getId(), updatedUser);
     }
 
     @After
