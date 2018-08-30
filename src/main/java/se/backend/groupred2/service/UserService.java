@@ -56,10 +56,15 @@ public final class UserService {
                 updatedUser.setTeam(user.getTeam());
             }
 
+            if(user.getUserNumber() != null){
+                updatedUser.setUserNumber(user.getUserNumber());
+            }
+
             if(!isBlank(user.getUserName())){
                 if (user.getUserName().length() < 10) {
                     throw new InvalidUserException("UserName must be atleast 10 characters");
                 }
+                updatedUser.setUserName(user.getUserName());
             }
 
             return Optional.of(repository.save(updatedUser));
