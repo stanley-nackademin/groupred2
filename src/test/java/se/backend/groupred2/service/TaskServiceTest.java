@@ -13,7 +13,6 @@ import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
 import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidTaskException;
-import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,12 @@ public class TaskServiceTest {
 
     @Before
     public void setUp() {
-        task = new Task("TaskTest", "test the createTask method", TaskStatus.UNSTARTED);
+        task = new Task("FirstTask", "test the createTask method", TaskStatus.UNSTARTED);
+        taskService.createTask(task);
+
+        Optional<Task> taskWithId = taskRepository.findByTitle(task.getTitle());
+        task.setId(taskWithId.get().getId());
+
         testTask = taskService.createTask(new Task("testTask", "test task", TaskStatus.UNSTARTED));
         activeUser1 = userService.createUser(new User("fn", "ln", "someCrappyUsername", true, 1000L));
         activeUser2 = userService.createUser(new User("fname", "lname", "newCrappyUsername", true, 1001L));
@@ -61,14 +65,14 @@ public class TaskServiceTest {
 
     //Todo: FAILED - NoSuchElementException - should pass
     @Test
-    public void createTaskTest() throws Exception {
-        taskService.createTask(task);
-        task.setId(1L);
-
-        Optional<Task> result = taskRepository.findById(task.getId());
+    public void createTaskTest() {
+        System.out.println(task.toString());
+        Optional<Task> result = taskService.getTask(task.getId());
         Task taskFromDatabase = result.get();
-
         assertEquals(task.toString(), taskFromDatabase.toString());
+        assertEquals(task.getDescription(), taskFromDatabase.getDescription());
+        assertEquals(task.getTitle(), taskFromDatabase.getTitle());
+        assertEquals(task.getStatus(), taskFromDatabase.getStatus());
     }
 
     @Test
@@ -95,8 +99,10 @@ public class TaskServiceTest {
     @After
     public void tearDown(){
         taskRepository.delete(task);
+
         taskRepository.delete(testTask);
         userRepository.delete(inactiveUser);
+
 
         for(Task t : taskList){
             taskRepository.delete(t);

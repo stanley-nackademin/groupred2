@@ -104,9 +104,7 @@ public final class UserService {
         if (user.isEmpty())
             throw new InvalidUserException("Could not find any user");
 
-        return repository.findAll().stream()
-                .filter(t -> t.getTeam().getId().equals(id))
-                .collect(Collectors.toList());
+        return user;
     }
 
     private void validate(User user) {
