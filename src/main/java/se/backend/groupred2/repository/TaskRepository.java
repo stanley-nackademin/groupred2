@@ -15,6 +15,8 @@ public interface TaskRepository extends CrudRepository<Task, Long> {
 
     Optional<Task> findById(Long id);
 
+    Optional<Task> findByTitle(String title);
+
     List<Task> findAllByStatus(Enum status);
 
     List<Task> findAll();

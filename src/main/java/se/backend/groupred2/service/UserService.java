@@ -62,7 +62,7 @@ public final class UserService {
         return result;
     }
 
-    private void checkIfActive(User user) {
+    protected void checkIfActive(User user) {
         if (!user.isActive())
             throw new InvalidTeamException("User is already inactive.");
     }
@@ -104,9 +104,7 @@ public final class UserService {
         if (user.isEmpty())
             throw new InvalidUserException("Could not find any user");
 
-        return repository.findAll().stream()
-                .filter(t -> t.getTeam().getId().equals(id))
-                .collect(Collectors.toList());
+        return user;
     }
 
     private void validate(User user) {
