@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -102,15 +100,16 @@ public class UserServiceTest {
 
     @Test
     public void inactivateUserTest(){
-        //Todo:
+        Long activeId = userRepository.findUserByFirstName("activatedUser").get(0).getId();
+        assertTrue(userService.deActivate(activeId).isPresent());
+        assertFalse(userService.deActivate(9893L).isPresent());
     }
 
     @Test(expected = InvalidTeamException.class)
     public  void inactivateUserThatIsAlreadyInactiveTest(){
         User user = userRepository.findUserByFirstName("deActivatedUser").get(0);
-        System.out.println(user.toString());
         userService.checkIfActive(user);
-        testUser = userRepository.findById(users.get(0).getId()).get();
+
     }
 
     @After
