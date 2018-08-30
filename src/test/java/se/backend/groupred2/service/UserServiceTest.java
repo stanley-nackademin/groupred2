@@ -11,6 +11,7 @@ import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
+import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class UserServiceTest {
     Team team = new Team("nameTeam", true, 10);
     ArrayList<User> users = new ArrayList<>();
     User user = new User("myFirstname","myLastname","MyUsernameee",true,112233L);
+    User badUser = new User("myFirstname","myLastname","tooShort",true,11223L);
 
     @Before
     public void setUp() {
@@ -48,12 +50,17 @@ public class UserServiceTest {
         }
 
         userRepository.save(user);
-    }
+        }
 
     @Test
     public void createUserTest()throws Exception{
         List<User> result = userRepository.findByUserNumber(112233L);
         assertEquals(!result.isEmpty(), !result.isEmpty());
+    }
+
+    @Test(expected = InvalidUserException.class)
+    public void createUserTestBadUsernumber() throws Exception{
+        userService.validate(badUser);
     }
 
     @Test
@@ -73,6 +80,7 @@ public class UserServiceTest {
         }
         teamRepository.delete(team);
         userRepository.delete(user);
+        userRepository.delete(badUser);
     }
 
 }
