@@ -56,14 +56,15 @@ public final class UserService {
                 updatedUser.setTeam(user.getTeam());
             }
 
-            if(user.getUserNumber() != null){
+            if (user.getUserNumber() != null) {
                 updatedUser.setUserNumber(user.getUserNumber());
             }
 
-            if(!isBlank(user.getUserName())){
+            if (!isBlank(user.getUserName())) {
                 if (user.getUserName().length() < 10) {
                     throw new InvalidUserException("UserName must be atleast 10 characters");
                 }
+
                 updatedUser.setUserName(user.getUserName());
             }
 
@@ -115,7 +116,6 @@ public final class UserService {
                 return user;
             }
 
-
         } else if (!(userNumber == 0)) {
             return repository.findByUserNumber(userNumber);
 
@@ -128,8 +128,9 @@ public final class UserService {
     public List<User> getAllUserByteamId(Long id) {
 
         List<User> user = repository.findUsersByTeamId(id);
-        if (user.isEmpty())
+        if (user.isEmpty()) {
             throw new InvalidUserException("Could not find any user");
+        }
 
         return repository.findAll().stream()
                 .filter(t -> t.getTeam().getId().equals(id))
@@ -142,7 +143,6 @@ public final class UserService {
             throw new InvalidUserException("UserName must be atleast 10 characters");
         } else if (user.getUserName().isEmpty() && user.getUserName() == null) {
             throw new InvalidUserException("userName is Empty");
-
         }
     }
 

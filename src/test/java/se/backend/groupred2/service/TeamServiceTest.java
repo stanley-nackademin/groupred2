@@ -36,10 +36,10 @@ public class TeamServiceTest {
     public void setUp() {
         teamRepository.save(fullTeam);
 
-        for (int i = 0; i < 10; i++){
-            users.add(new User("user"+i, "firstName"+i, "lastName"+i, true, 1000L+i));
+        for (int i = 0; i < 10; i++) {
+            users.add(new User("user" + i, "firstName" + i, "lastName" + i, true, 1000L + i));
         }
-        for (User s: users) {
+        for (User s : users) {
             s.setTeam(fullTeam);
             userRepository.save(s);
         }
@@ -56,8 +56,8 @@ public class TeamServiceTest {
     }
 
     @After
-    public void tearDown(){
-        for (User s: users) {
+    public void tearDown() {
+        for (User s : users) {
             userRepository.delete(s);
         }
         teamRepository.delete(fullTeam);
