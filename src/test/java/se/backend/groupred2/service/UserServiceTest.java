@@ -11,6 +11,7 @@ import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
+import se.backend.groupred2.service.exceptions.InvalidTeamException;
 import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ public class UserServiceTest {
 
     Team team = new Team("nameTeam", true, 10);
     ArrayList<User> users = new ArrayList<>();
+    User activatedUser;
+    User deActivatedUser;
+
     User testUser;
     @Before
     public void setUp() {
@@ -50,11 +54,16 @@ public class UserServiceTest {
         }
 
         testUser = userRepository.findById(users.get(0).getId()).get();
+        activatedUser = new User("activatedUser", "activatedUser", "activatedUser", true, 1L);
+        deActivatedUser = new User("deActivatedUser", "deActivatedUser", "deActivatedUser", false, 2L);
+        userRepository.save(activatedUser);
+        userRepository.save(deActivatedUser);
     }
 
 
+    //Todo: FAIL: Nullpointer Exception - should pass
     @Test
-    public void getAllUserByteamIdTest() throws Exception{
+    public void getAllUserByteamIdTest() {
         List<User> usersFromRepo = userService.getAllUserByteamId(teamRepository.findByName("nameTeam").get().getId());
         assertEquals(usersFromRepo.get(1).toString(), users.get(1).toString());
         assertEquals(usersFromRepo.get(2).toString(), users.get(2).toString());
@@ -91,12 +100,28 @@ public class UserServiceTest {
         userService.update(testUser.getId(), updatedUser);
     }
 
+    @Test
+    public void inactivateUserTest(){
+        //Todo:
+    }
+
+    @Test(expected = InvalidTeamException.class)
+    public  void inactivateUserThatIsAlreadyInactiveTest(){
+        User user = userRepository.findUserByFirstName("deActivatedUser").get(0);
+        System.out.println(user.toString());
+        userService.checkIfActive(user);
+        testUser = userRepository.findById(users.get(0).getId()).get();
+    }
+
     @After
     public void tearDown(){
         for (User s: users) {
             userRepository.delete(s);
         }
         teamRepository.delete(team);
+
+        userRepository.delete(activatedUser);
+        userRepository.delete(deActivatedUser);
     }
 
 }
