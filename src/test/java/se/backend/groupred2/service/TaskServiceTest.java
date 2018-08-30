@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
 import se.backend.groupred2.repository.TaskRepository;
+
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -43,7 +44,7 @@ public class TaskServiceTest {
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() {
         taskRepository.delete(task);
     }
 }

@@ -35,22 +35,22 @@ public class UserServiceTest {
 
     Team team = new Team("nameTeam", true, 10);
     ArrayList<User> users = new ArrayList<>();
+
     @Before
     public void setUp() {
         teamRepository.save(team);
 
-        for (int i = 0; i < 5; i++){
-            users.add(new User("user"+i, "firstName"+i, "lastName"+i, true, 1000L+i));
+        for (int i = 0; i < 5; i++) {
+            users.add(new User("user" + i, "firstName" + i, "lastName" + i, true, 1000L + i));
         }
-        for (User s: users) {
+        for (User s : users) {
             s.setTeam(team);
             userRepository.save(s);
         }
     }
-
-
+    
     @Test
-    public void getAllUserByteamIdTest() throws Exception{
+    public void getAllUserByteamIdTest() throws Exception {
         List<User> usersFromRepo = userService.getAllUserByteamId(teamRepository.findByName("nameTeam").get().getId());
         assertEquals(usersFromRepo.get(1).toString(), users.get(1).toString());
         assertEquals(usersFromRepo.get(2).toString(), users.get(2).toString());
@@ -60,8 +60,8 @@ public class UserServiceTest {
     }
 
     @After
-    public void tearDown(){
-        for (User s: users) {
+    public void tearDown() {
+        for (User s : users) {
             userRepository.delete(s);
         }
         teamRepository.delete(team);
