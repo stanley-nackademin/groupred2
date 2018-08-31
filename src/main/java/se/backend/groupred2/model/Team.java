@@ -1,8 +1,5 @@
 package se.backend.groupred2.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -22,8 +19,7 @@ public final class Team {
     @Column(nullable = false, columnDefinition = "int default 10")
     private int maxUsers;
 
-    @ManyToMany(mappedBy = "teams", fetch = FetchType.EAGER)
-    @JsonBackReference
+    @ManyToMany(mappedBy = "teams")
     private Collection<User> users;
 
     protected Team() {
@@ -39,16 +35,8 @@ public final class Team {
         users.add(user);
     }
 
-    public void removeUser(User user){
-        users.remove(user);
-    }
-
     public Collection<User> getAllUsers(){
         return users;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public Long getId() {

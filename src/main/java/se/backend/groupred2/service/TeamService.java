@@ -1,6 +1,8 @@
 package se.backend.groupred2.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
@@ -12,7 +14,8 @@ import se.backend.groupred2.service.exceptions.InvalidUserException;
 import java.util.Optional;
 
 @Service
-public final class TeamService {
+@Transactional
+public class TeamService {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
 
@@ -79,7 +82,6 @@ public final class TeamService {
             User user = userResult.get();
             Team team = teamResult.get();
 
-
             validate(team);
             team.addUser(user);
             user.addTeam(team);
@@ -97,6 +99,7 @@ public final class TeamService {
         return userResult;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     protected void validate(Team team) {
         if (team.getAllUsers().size() >= team.getMaxUsers())
             throw new InvalidTeamException("Can't add user. Team is full");

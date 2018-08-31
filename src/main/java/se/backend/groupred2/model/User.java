@@ -43,14 +43,6 @@ public final class User {
         teams.add(team);
     }
 
-    public void removeTeam(Team team){
-        teams.remove(team);
-    }
-
-    public Collection<Team> getTeams() {
-        return teams;
-    }
-
     public Long getId() {
         return id;
     }
