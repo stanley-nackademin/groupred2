@@ -43,6 +43,10 @@ public final class User {
         teams.add(team);
     }
 
+    public Collection<Team> getTeams(){
+        return teams;
+    }
+
     public Long getId() {
         return id;
     }

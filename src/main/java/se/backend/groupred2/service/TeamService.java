@@ -12,6 +12,7 @@ import se.backend.groupred2.service.exceptions.InvalidTeamException;
 import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -82,7 +83,10 @@ public class TeamService {
             User user = userResult.get();
             Team team = teamResult.get();
 
-            validate(team);
+            validateUserAlreadyPartOfTeam(user, team);
+            validateFullTeam(team);
+            validateUserTeamLimit(user);
+
             team.addUser(user);
             user.addTeam(team);
             userRepository.save(user);
@@ -100,9 +104,22 @@ public class TeamService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    protected void validate(Team team) {
+    protected void validateFullTeam(Team team) {
         if (team.getAllUsers().size() >= team.getMaxUsers())
             throw new InvalidTeamException("Can't add user. Team is full");
+    }
+
+
+    protected void validateUserTeamLimit(User user) {
+        if(user.getTeams().size() > 2){
+            throw new InvalidTeamException("The user is already in 3 different teams");
+        }
+    }
+
+    protected void validateUserAlreadyPartOfTeam(User users, Team team) {
+       if(users.getTeams().stream().anyMatch(t -> t.getId().equals(team.getId()))){
+           throw new InvalidTeamException("The user is already a part of this team");
+       }
     }
 }
 

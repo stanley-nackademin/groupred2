@@ -61,7 +61,7 @@ public class TeamServiceTest {
     public void maxUserLimitValidationTest() {
         Optional<Team> result = teamRepository.findByName("fullTeam");
         Team team = result.get();
-        teamService.validate(team);
+        teamService.validateFullTeam(team);
     }
 
     @After
