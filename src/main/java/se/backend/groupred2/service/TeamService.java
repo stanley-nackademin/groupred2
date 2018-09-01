@@ -12,7 +12,6 @@ import se.backend.groupred2.service.exceptions.InvalidTeamException;
 import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
