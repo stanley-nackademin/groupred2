@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface UserRepository extends CrudRepository<User, Long> {
 
-//    int countByTeam(Team team);
-
     List<User> findByUserNumber(Long userNumber);
 
     List<User> findUserByUserName(String userName);
