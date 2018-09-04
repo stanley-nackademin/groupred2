@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
+import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
 import se.backend.groupred2.repository.TeamRepository;
@@ -30,6 +31,9 @@ public class UserServiceTest {
     UserService userService;
 
     @Autowired
+    TeamService teamService;
+
+    @Autowired
     TeamRepository teamRepository;
 
     @Autowired
@@ -41,9 +45,27 @@ public class UserServiceTest {
     private User deActivatedUser;
     private User user = new User("myFirstname", "myLastname", "MyUsernameee", true, 112233L);
     private User badUser = new User("myFirstname", "myLastname", "tooShort", true, 11223L);
+    private Team teamForGetAllUsersByTeamIdTest;
+    private List<User> localUsersToMatchFromRepo = new ArrayList<>();
 
     @Before
     public void setUp() {
+        teamForGetAllUsersByTeamIdTest = new Team("teamForGetAllUsersByTeamIdTest", true, 10);
+        teamService.createTeam(teamForGetAllUsersByTeamIdTest);
+
+        for (int i = 0; i < 5; i++){
+            userService.createUser(new User("userForGetAllUserByTeamId", "lastName"+i, "username12346"+i, true, 2000L+i));
+            User user = new User("userForGetAllUserByTeamId", "lastName"+i, "username12346"+i, true, 2000L+i);
+            user.setId(i+1L);
+            localUsersToMatchFromRepo.add(user);
+        }
+
+        List<User> usersWithId = userRepository.findUserByFirstName("userForGetAllUserByTeamId");
+        Team teamWithId = teamRepository.findByName("teamForGetAllUsersByTeamIdTest").get();
+        for (User s: usersWithId) {
+            teamService.addUser(teamWithId.getId(), s.getId());
+        }
+
         userRepository.save(user);
         userRepository.save(badUser);
 
@@ -59,6 +81,17 @@ public class UserServiceTest {
         deActivatedUser = new User("deActivatedUser", "deActivatedUser", "deActivatedUser", false, 2L);
         userRepository.save(activatedUser);
         userRepository.save(deActivatedUser);
+    }
+
+    @Test
+    public void getAllUserByteamIdTest(){
+        Team team = teamService.getTeam(teamRepository.findByName("teamForGetAllUsersByTeamIdTest").get().getId());
+        List<User> usersFromRepo = userService.getAllUserByteamId(team.getId());
+        assertEquals(usersFromRepo.get(1).toString(), localUsersToMatchFromRepo.get(1).toString());
+        assertEquals(usersFromRepo.get(2).toString(), localUsersToMatchFromRepo.get(2).toString());
+        assertEquals(usersFromRepo.get(3).toString(), localUsersToMatchFromRepo.get(3).toString());
+        assertNotEquals(usersFromRepo.get(2).toString(), localUsersToMatchFromRepo.get(3).toString());
+        assertNotEquals(usersFromRepo.get(1).toString(), localUsersToMatchFromRepo.get(4).toString());
     }
 
     @Test
@@ -136,6 +169,15 @@ public class UserServiceTest {
 
     @After
     public void tearDown() {
+
+        List<User> userForGetAllUserByTeamId = userRepository.findUserByFirstName("userForGetAllUserByTeamId");
+        for (User s: userForGetAllUserByTeamId) {
+            userRepository.delete(s);
+        }
+
+        localUsersToMatchFromRepo.clear();
+        Team teamForGetAllUsersByTeamIdTest = teamRepository.findByName("teamForGetAllUsersByTeamIdTest").get();
+        teamRepository.delete(teamForGetAllUsersByTeamIdTest);
 
         for (User s: users) {
             userRepository.delete(s);
