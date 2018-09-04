@@ -45,6 +45,12 @@ public class TaskServiceTest {
     Task testTask;
     List<Task> taskList = new ArrayList<>();
 
+    Task taskUnstarted;
+    Task taskDone;
+    Task taskPending;
+    Task taskStarted;
+    Task taskStarted1;
+
     @Before
     public void setUp() {
         taskRepository.save(task);
@@ -59,6 +65,18 @@ public class TaskServiceTest {
             Task task = taskService.createTask(new Task("task"+i, "title"+i, TaskStatus.UNSTARTED));
             taskList.add(task);
         }
+
+        taskDone = new Task("TaskDone", "testTask med status DONE", TaskStatus.DONE);
+        taskUnstarted = new Task("TaskUnstarted", "testTask med status UNSTARTED", TaskStatus.UNSTARTED);
+        taskPending = new Task("TaskPending", "testTask med status PENDING", TaskStatus.PENDING);
+        taskStarted = new Task("TaskStarted", "testTask med status STARTED", TaskStatus.STARTED);
+        taskStarted1 = new Task("TaskStarted1", "testTask med status STARTED", TaskStatus.STARTED);
+
+        taskRepository.save(taskDone);
+        taskRepository.save(taskStarted);
+        taskRepository.save(taskStarted1);
+        taskRepository.save(taskUnstarted);
+        taskRepository.save(taskPending);
     }
 
     @Test
@@ -94,6 +112,30 @@ public class TaskServiceTest {
         }
     }
 
+    @Test(expected = InvalidTaskException.class)
+    public void InvalidTaskUpdateStatusfromAndToPendingTest(){
+        taskService.checkStatus(taskDone, taskPending);
+        taskService.checkStatus(taskPending, taskDone);
+        taskService.checkStatus(taskPending, taskUnstarted);
+        taskService.checkStatus(taskUnstarted, taskPending);
+
+    }
+
+    @Test
+    public void validTaskUpdateStatusFromAndToPendingTest(){
+        Long startedID = taskRepository.findAllByStatus(Enum.valueOf(TaskStatus.class, "STARTED")).get(0).getId();
+        Long started1ID = taskRepository.findAllByStatus(Enum.valueOf(TaskStatus.class, "STARTED")).get(1).getId();
+        Long pendingID = taskRepository.findAllByStatus(Enum.valueOf(TaskStatus.class, "PENDING")).get(0).getId();
+
+        TaskStatus updatedTaskStatusToPending = taskService.updateStatus(startedID, taskService.getTask(pendingID).get()).get().getStatus();
+        assertEquals(TaskStatus.PENDING, updatedTaskStatusToPending);
+
+        TaskStatus updatedTaskStatustoStarted = taskService.updateStatus(pendingID, taskService.getTask(started1ID).get()).get().getStatus();
+        assertEquals(TaskStatus.STARTED, updatedTaskStatustoStarted);
+
+
+    }
+
     @After
     public void tearDown() {
         taskRepository.delete(task);
@@ -109,5 +151,11 @@ public class TaskServiceTest {
 
         userRepository.delete(activeUser1);
         userRepository.delete(activeUser2);
+
+        taskRepository.delete(taskDone);
+        taskRepository.delete(taskPending);
+        taskRepository.delete(taskUnstarted);
+        taskRepository.delete(taskStarted);
+        taskRepository.delete(taskStarted1);
     }
 }
