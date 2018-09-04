@@ -14,8 +14,7 @@ import se.backend.groupred2.service.exceptions.InvalidUserException;
 import java.util.Optional;
 
 @Service
-@Transactional
-public class TeamService {
+public final class TeamService {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
 
@@ -102,7 +101,6 @@ public class TeamService {
         return userResult;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     protected void validateFullTeam(Team team) {
         if (team.getAllUsers().size() >= team.getMaxUsers())
             throw new InvalidTeamException("Can't add user. Team is full");
