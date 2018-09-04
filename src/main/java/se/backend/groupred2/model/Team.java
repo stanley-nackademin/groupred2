@@ -19,7 +19,7 @@ public final class Team {
     @Column(nullable = false, columnDefinition = "int default 10")
     private int maxUsers;
 
-    @ManyToMany(mappedBy = "teams")
+    @ManyToMany(mappedBy = "teams", fetch = FetchType.EAGER)
     private Collection<User> users;
 
     protected Team() {
