@@ -1,6 +1,7 @@
 package se.backend.groupred2.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 public final class Team {
@@ -18,6 +19,9 @@ public final class Team {
     @Column(nullable = false, columnDefinition = "int default 10")
     private int maxUsers;
 
+    @ManyToMany(mappedBy = "teams")
+    private Collection<User> users;
+
     protected Team() {
     }
 
@@ -27,8 +31,12 @@ public final class Team {
         this.maxUsers = maxUsers;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void addUser(User user) {
+        users.add(user);
+    }
+
+    public Collection<User> getAllUsers() {
+        return users;
     }
 
     public Long getId() {
@@ -61,5 +69,13 @@ public final class Team {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Team{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

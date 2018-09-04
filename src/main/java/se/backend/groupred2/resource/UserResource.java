@@ -64,6 +64,4 @@ public final class UserResource {
     public List<User> getAllUserByTeamId(@PathParam("id") Long teamId) {
         return service.getAllUserByteamId(teamId);
     }
-
-
 }

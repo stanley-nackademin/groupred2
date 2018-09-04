@@ -1,6 +1,8 @@
 package se.backend.groupred2.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TeamRepository;
@@ -12,7 +14,8 @@ import se.backend.groupred2.service.exceptions.InvalidUserException;
 import java.util.Optional;
 
 @Service
-public final class TeamService {
+@Transactional
+public class TeamService {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
 
@@ -79,10 +82,12 @@ public final class TeamService {
             User user = userResult.get();
             Team team = teamResult.get();
 
+            validateUserAlreadyPartOfTeam(user, team);
+            validateFullTeam(team);
+            validateUserTeamLimit(user);
 
-            validate(team);
-            user.setTeam(team);
-
+            team.addUser(user);
+            user.addTeam(team);
             userRepository.save(user);
 
         } else if (!teamResult.isPresent() && !userResult.isPresent()) {
@@ -97,9 +102,23 @@ public final class TeamService {
         return userResult;
     }
 
-    protected void validate(Team team) {
-        if (userRepository.countByTeam(team) >= team.getMaxUsers())
+    @Transactional(propagation = Propagation.REQUIRED)
+    protected void validateFullTeam(Team team) {
+        if (team.getAllUsers().size() >= team.getMaxUsers())
             throw new InvalidTeamException("Can't add user. Team is full");
+    }
+
+
+    protected void validateUserTeamLimit(User user) {
+        if (user.getTeams().size() > 2) {
+            throw new InvalidTeamException("The user is already in 3 different teams");
+        }
+    }
+
+    protected void validateUserAlreadyPartOfTeam(User users, Team team) {
+        if (users.getTeams().stream().anyMatch(t -> t.getId().equals(team.getId()))) {
+            throw new InvalidTeamException("The user is already a part of this team");
+        }
     }
 }
 

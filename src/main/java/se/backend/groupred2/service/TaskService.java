@@ -3,13 +3,18 @@ package se.backend.groupred2.service;
 import org.springframework.stereotype.Service;
 import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
+import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
+import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidTaskException;
+import se.backend.groupred2.service.exceptions.InvalidTeamException;
 
-import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,10 +22,12 @@ public final class TaskService {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final TeamRepository teamRepository;
 
-    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository, TeamRepository teamRepository) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
+        this.teamRepository = teamRepository;
     }
 
     public Task createTask(Task task) {
@@ -62,7 +69,7 @@ public final class TaskService {
         List<Task> taskItems = taskRepository.findAllTaskByUserId(userId);
 
         if (taskResult.isPresent() && userResult.isPresent()) {
-            if (!userResult.get().isActive()) {
+            if (!userResult.get().getIsActive()) {
                 throw new InvalidTaskException("That user is not active");
             } else if (taskItems.size() > 4) {
                 throw new InvalidTaskException("To many tasks for that user, Max = 5");
@@ -111,14 +118,24 @@ public final class TaskService {
     }
 
     public List<Task> getAllTasksByTeamId(Long teamId) {
-        List<User> userResult = userRepository.findUsersByTeamId(teamId);
-        if (userResult.isEmpty()) {
-            throw new InvalidTaskException("Could not find any users for that team");
-        }
-        List<Task> allTasks = new ArrayList<>();
-        userResult.forEach(user -> allTasks.addAll(taskRepository.findAllTaskByUserId(user.getId())));
+        Optional<Team> result = teamRepository.findById(teamId);
+        Team team;
+        if (result.isPresent()) {
+            team = result.get();
+            List<User> userResult = userRepository.findUsersByTeams(team);
 
-        return allTasks;
+            if (userResult.isEmpty()) {
+                throw new InvalidTaskException("Could not find any users for that team");
+            }
+
+            List<Task> allTasks = new ArrayList<>();
+            userResult.forEach(user -> allTasks.addAll(taskRepository.findAllTaskByUserId(user.getId())));
+
+            return allTasks;
+
+        } else {
+            throw new InvalidTeamException("Team not found from given id");
+        }
     }
 
     private void validateTask(Task task) {
@@ -137,14 +154,14 @@ public final class TaskService {
         Optional<Task> taskResult = taskRepository.findById(id);
         List<User> myList = userRepository.findByUserNumber(usernumber);
 
-        if(taskResult.isPresent() && !myList.isEmpty()){
+        if (taskResult.isPresent() && !myList.isEmpty()) {
             Task finalResult = taskResult.get();
             Set<User> mySet = taskResult.get().getHelpers();
             mySet.addAll(myList);
 
             finalResult.setHelpers(mySet);
             taskRepository.save(finalResult);
-        }else {
+        } else {
             throw new InvalidTaskException("Could not find a task or user!");
         }
 

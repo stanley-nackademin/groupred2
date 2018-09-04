@@ -3,15 +3,16 @@ package se.backend.groupred2.service;
 import org.springframework.stereotype.Service;
 import se.backend.groupred2.model.Task;
 import se.backend.groupred2.model.TaskStatus;
+import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
 import se.backend.groupred2.repository.TaskRepository;
+import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidTeamException;
 import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -20,21 +21,23 @@ public final class UserService {
 
     private final UserRepository repository;
     private final TaskRepository taskRepository;
+    private final TeamRepository teamRepository;
 
 
-    public UserService(UserRepository repository, TaskRepository taskRepository) {
+    public UserService(UserRepository repository, TaskRepository taskRepository, TeamRepository teamRepository) {
         this.repository = repository;
         this.taskRepository = taskRepository;
+        this.teamRepository = teamRepository;
     }
 
     public User createUser(User user) {
         validate(user);
         return repository.save(new User(user.getFirstName(), user.getLastName(),
-                user.getUserName(), user.isActive(), user.getUserNumber()));
+                user.getUserName(), user.getIsActive(), user.getUserNumber()));
     }
 
     public Optional<User> update(Long id, User user) {
-
+        validate(user);
         Optional<User> result = repository.findById(id);
 
         if (result.isPresent()) {
@@ -50,10 +53,6 @@ public final class UserService {
 
             if (user.getIsActive() != null) {
                 updatedUser.setIsActive(user.getIsActive());
-            }
-
-            if (user.getTeam() != null && !isBlank(user.getTeam().getId().toString())) {
-                updatedUser.setTeam(user.getTeam());
             }
 
             if (user.getUserNumber() != null) {
@@ -91,7 +90,7 @@ public final class UserService {
     }
 
     private void checkIfActive(User user) {
-        if (!user.isActive())
+        if (!user.getIsActive())
             throw new InvalidTeamException("User is already inactive.");
     }
 
@@ -126,15 +125,19 @@ public final class UserService {
     }
 
     public List<User> getAllUserByteamId(Long id) {
+        Optional<Team> result = teamRepository.findById(id);
+        List<User> users;
+        if (result.isPresent()) {
+            Team team = result.get();
+            users = repository.findUsersByTeams(team);
+            if (users.isEmpty())
+                throw new InvalidUserException("Could not find any user");
 
-        List<User> user = repository.findUsersByTeamId(id);
-        if (user.isEmpty()) {
-            throw new InvalidUserException("Could not find any user");
+        } else {
+            throw new InvalidUserException("Could not find team from given team-ID");
         }
 
-        return repository.findAll().stream()
-                .filter(t -> t.getTeam().getId().equals(id))
-                .collect(Collectors.toList());
+        return users;
     }
 
     public void validate(User user) {
@@ -145,7 +148,6 @@ public final class UserService {
             throw new InvalidUserException("userName is Empty");
         }
     }
-
 }
 
 

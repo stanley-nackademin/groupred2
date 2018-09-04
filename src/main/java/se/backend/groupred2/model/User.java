@@ -3,6 +3,7 @@ package se.backend.groupred2.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 public final class User {
@@ -19,9 +20,12 @@ public final class User {
     @Column(nullable = false, unique = true)
     private Long userNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "user_teams",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "teams_id")})
     @JsonBackReference
-    private Team team;
+    private Collection<Team> teams;
 
     protected User() {
     }
@@ -33,6 +37,14 @@ public final class User {
         this.userName = userName;
         this.active = active;
         this.userNumber = userNumber;
+    }
+
+    public void addTeam(Team team) {
+        teams.add(team);
+    }
+
+    public Collection<Team> getTeams() {
+        return teams;
     }
 
     public Long getId() {
@@ -55,16 +67,8 @@ public final class User {
         return userName;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
     public Long getUserNumber() {
         return userNumber;
-    }
-
-    public Team getTeam() {
-        return team;
     }
 
     public void setFirstName(String firstName) {
@@ -89,10 +93,6 @@ public final class User {
 
     public void deActivate() {
         this.active = false;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
     }
 
     public Boolean getIsActive() {
