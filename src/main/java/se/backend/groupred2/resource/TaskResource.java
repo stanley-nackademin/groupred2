@@ -92,6 +92,16 @@ public final class TaskResource {
                 .build();
     }
 
+    @PUT
+    @Path("{id}/helpers/{usernumber}")
+    public Response addHelpers(@PathParam("id") Long id,
+                               @PathParam("usernumber") Long usernumber) {
+
+        return taskService.assignHelperToTask(id, usernumber)
+                .map(Response::ok)
+                .orElse(Response.status(NOT_FOUND))
+                .build();
+    }
 }
 
 

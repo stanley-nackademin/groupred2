@@ -137,7 +137,7 @@ public final class UserService {
                 .collect(Collectors.toList());
     }
 
-    private void validate(User user) {
+    public void validate(User user) {
         int UserName = user.getUserName().length();
         if (UserName < 10) {
             throw new InvalidUserException("UserName must be atleast 10 characters");

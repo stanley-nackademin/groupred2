@@ -8,9 +8,8 @@ import se.backend.groupred2.repository.TaskRepository;
 import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidTaskException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import javax.ws.rs.core.Response;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -134,4 +133,21 @@ public final class TaskService {
         }
     }
 
+    public Optional<Task> assignHelperToTask(Long id, Long usernumber) {
+        Optional<Task> taskResult = taskRepository.findById(id);
+        List<User> myList = userRepository.findByUserNumber(usernumber);
+
+        if(taskResult.isPresent() && !myList.isEmpty()){
+            Task finalResult = taskResult.get();
+            Set<User> mySet = taskResult.get().getHelpers();
+            mySet.addAll(myList);
+
+            finalResult.setHelpers(mySet);
+            taskRepository.save(finalResult);
+        }else {
+            throw new InvalidTaskException("Could not find a task or user!");
+        }
+
+        return taskResult;
+    }
 }

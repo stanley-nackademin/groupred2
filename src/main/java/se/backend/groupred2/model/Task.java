@@ -1,8 +1,12 @@
 package se.backend.groupred2.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public final class Task {
@@ -21,6 +25,10 @@ public final class Task {
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonBackReference
     private User user;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private Set<User> helpers;
 
     protected Task() {
     }
@@ -69,6 +77,14 @@ public final class Task {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Set<User> getHelpers() {
+        return helpers;
+    }
+
+    public void setHelpers(Set<User> helpers) {
+        this.helpers = helpers;
     }
 
     @Override
