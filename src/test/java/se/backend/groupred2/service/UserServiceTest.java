@@ -7,7 +7,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import se.backend.groupred2.model.Task;
+import se.backend.groupred2.model.TaskStatus;
 import se.backend.groupred2.model.User;
+import se.backend.groupred2.repository.TaskRepository;
 import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidTeamException;
@@ -15,6 +18,7 @@ import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -29,6 +33,12 @@ public class UserServiceTest {
     TeamRepository teamRepository;
 
     @Autowired
+    TaskService taskService;
+
+    @Autowired
+    TaskRepository taskRepository;
+
+    @Autowired
     UserRepository userRepository;
 
     ArrayList<User> users = new ArrayList<>();
@@ -37,6 +47,7 @@ public class UserServiceTest {
     private User deActivatedUser;
     private User user = new User("myFirstname", "myLastname", "MyUsernameee", true, 112233L);
     private User badUser = new User("myFirstname", "myLastname", "tooShort", true, 11223L);
+    private Task task = new Task("FirstTask", "test the createTask method", TaskStatus.UNSTARTED);
 
     @Before
     public void setUp() {
@@ -49,6 +60,11 @@ public class UserServiceTest {
         for (User s: users) {
             userRepository.save(s);
         }
+
+        task = new Task("FirstTask", "test the createTask method", TaskStatus.UNSTARTED);
+        taskService.createTask(task);
+        Optional<Task> taskWithId = taskRepository.findByTitle(task.getTitle());
+        task.setId(taskWithId.get().getId());
 
         testUser = userRepository.findById(users.get(0).getId()).get();
         activatedUser = new User("activatedUser", "activatedUser", "activatedUser", true, 1L);
@@ -130,6 +146,17 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    public void createTaskTest() {
+        System.out.println(task.toString());
+        Optional<Task> result = taskService.getTask(task.getId());
+        Task taskFromDatabase = result.get();
+        assertEquals(task.toString(), taskFromDatabase.toString());
+        assertEquals(task.getDescription(), taskFromDatabase.getDescription());
+        assertEquals(task.getTitle(), taskFromDatabase.getTitle());
+        assertEquals(task.getStatus(), taskFromDatabase.getStatus());
+    }
+
     @After
     public void tearDown() {
 
@@ -141,5 +168,6 @@ public class UserServiceTest {
         userRepository.delete(badUser);
         userRepository.delete(activatedUser);
         userRepository.delete(deActivatedUser);
+        taskRepository.delete(task);
     }
 }
