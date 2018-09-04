@@ -1,5 +1,8 @@
 package se.backend.groupred2.model;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -20,6 +23,7 @@ public final class Team {
     private int maxUsers;
 
     @ManyToMany(mappedBy = "teams", fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
     private Collection<User> users;
 
     protected Team() {
