@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.apache.logging.log4j.util.Strings.isBlank;
+
 @Service
 public final class UserService {
 
@@ -32,16 +34,42 @@ public final class UserService {
     }
 
     public Optional<User> update(Long id, User user) {
-        validate(user);
+
         Optional<User> result = repository.findById(id);
 
-        result.ifPresent(u -> {
-            u.setFirstName(user.getFirstName());
-            u.setLastName(user.getLastName());
-            u.setUserName(user.getUserName());
-            u.setActive(user.isActive());
-            repository.save(u);
-        });
+        if (result.isPresent()) {
+            User updatedUser = result.get();
+
+            if (!isBlank(user.getFirstName())) {
+                updatedUser.setFirstName(user.getFirstName());
+            }
+
+            if (!isBlank(user.getLastName())) {
+                updatedUser.setLastName(user.getLastName());
+            }
+
+            if (user.getIsActive() != null) {
+                updatedUser.setIsActive(user.getIsActive());
+            }
+
+            if (user.getTeam() != null && !isBlank(user.getTeam().getId().toString())) {
+                updatedUser.setTeam(user.getTeam());
+            }
+
+            if (user.getUserNumber() != null) {
+                updatedUser.setUserNumber(user.getUserNumber());
+            }
+
+            if (!isBlank(user.getUserName())) {
+                if (user.getUserName().length() < 10) {
+                    throw new InvalidUserException("UserName must be atleast 10 characters");
+                }
+
+                updatedUser.setUserName(user.getUserName());
+            }
+
+            return Optional.of(repository.save(updatedUser));
+        }
 
         return result;
     }
@@ -62,7 +90,7 @@ public final class UserService {
         return result;
     }
 
-    private void checkIfActive(User user) {
+    public void checkIfActive(User user) {
         if (!user.isActive())
             throw new InvalidTeamException("User is already inactive.");
     }
@@ -88,7 +116,6 @@ public final class UserService {
                 return user;
             }
 
-
         } else if (!(userNumber == 0)) {
             return repository.findByUserNumber(userNumber);
 
@@ -101,8 +128,9 @@ public final class UserService {
     public List<User> getAllUserByteamId(Long id) {
 
         List<User> user = repository.findUsersByTeamId(id);
-        if (user.isEmpty())
+        if (user.isEmpty()) {
             throw new InvalidUserException("Could not find any user");
+        }
 
         return repository.findAll().stream()
                 .filter(t -> t.getTeam().getId().equals(id))
@@ -115,10 +143,7 @@ public final class UserService {
             throw new InvalidUserException("UserName must be atleast 10 characters");
         } else if (user.getUserName().isEmpty() && user.getUserName() == null) {
             throw new InvalidUserException("userName is Empty");
-
         }
     }
 
 }
-
-

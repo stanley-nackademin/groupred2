@@ -14,7 +14,7 @@ public final class User {
     @Column(nullable = false)
     private String firstName, lastName, userName;
 
-    private boolean active;
+    private Boolean active;
 
     @Column(nullable = false, unique = true)
     private Long userNumber;
@@ -26,7 +26,7 @@ public final class User {
     protected User() {
     }
 
-    public User(String firstName, String lastName, String userName, boolean active, Long userNumber) {
+    public User(String firstName, String lastName, String userName, Boolean active, Long userNumber) {
 
         this.firstName = firstName;
         this.lastName = lastName;
@@ -93,6 +93,14 @@ public final class User {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public Boolean getIsActive() {
+        return active;
+    }
+
+    public void setIsActive(Boolean active) {
+        this.active = active;
     }
 
     @Override
