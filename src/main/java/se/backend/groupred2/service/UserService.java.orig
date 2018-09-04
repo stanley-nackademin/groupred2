@@ -89,10 +89,14 @@ public final class UserService {
         return result;
     }
 
+<<<<<<< HEAD
+    private void checkIfActive(User user) {
+        if (!user.getIsActive())
+=======
     public void checkIfActive(User user) {
-        if (!user.getIsActive()) {
+        if (!user.isActive())
+>>>>>>> features-nyStatus
             throw new InvalidTeamException("User is already inactive.");
-        }
     }
 
     public List<Task> getAllTasksByUserId(Long userkId) {
@@ -105,37 +109,35 @@ public final class UserService {
         if (userNumber == 0) {
             if (!userName.equals("0")) {
                 List<User> user = repository.findUserByUserName(userName);
-
                 return user;
+
             } else if ((!firstName.equals("0"))) {
                 List<User> user = repository.findUserByFirstName(firstName);
-
                 return user;
             } else if (!lastName.equals("0")) {
-                List<User> user = repository.findUserByLastName(lastName);
 
+                List<User> user = repository.findUserByLastName(lastName);
                 return user;
             }
+
         } else if (!(userNumber == 0)) {
             return repository.findByUserNumber(userNumber);
+
         } else {
             throw new InvalidUserException("fel");
         }
-
         return null;
     }
 
     public List<User> getAllUserByteamId(Long id) {
         Optional<Team> result = teamRepository.findById(id);
         List<User> users;
-
         if (result.isPresent()) {
             Team team = result.get();
             users = repository.findUsersByTeams(team);
-
-            if (users.isEmpty()) {
+            if (users.isEmpty())
                 throw new InvalidUserException("Could not find any user");
-            }
+
         } else {
             throw new InvalidUserException("Could not find team from given team-ID");
         }

@@ -54,13 +54,13 @@ public final class TaskService {
         if (taskResult.isPresent()) {
             Task updatedTask = taskResult.get();
 
+
             checkStatus(updatedTask, task);         //här kommer metodanrop PENDING-STARTED-valideringen av workItem status
             updatedTask.setStatus(task.getStatus());
             taskRepository.save(updatedTask);
         } else {
             throw new InvalidTaskException("Could not find that task");
         }
-
         return taskResult;
     }
 
@@ -94,7 +94,6 @@ public final class TaskService {
         if (tasks.isEmpty()) {
             throw new InvalidTaskException("Could not find any tasks with that status");
         }
-
         return tasks;
     }
 
@@ -104,7 +103,6 @@ public final class TaskService {
         if (tasks.isEmpty()) {
             throw new InvalidTaskException("Could not find any tasks for that user");
         }
-
         return tasks;
     }
 
@@ -118,14 +116,12 @@ public final class TaskService {
         if (tasks.isEmpty()) {
             throw new InvalidTaskException("Could not find any tasks with that description");
         }
-
         return tasks;
     }
 
     public List<Task> getAllTasksByTeamId(Long teamId) {
         Optional<Team> result = teamRepository.findById(teamId);
         Team team;
-
         if (result.isPresent()) {
             team = result.get();
             List<User> userResult = userRepository.findUsersByTeams(team);
@@ -151,11 +147,12 @@ public final class TaskService {
     }
 
     public void validateStatus(String status) {
-        if (!status.equals("UNSTARTED") && !status.equals("STARTED") && !status.equals("DONE") && !status.equals("PENDING")) {
+        if (!status.equals("UNSTARTED") && !status.equals("STARTED") && !status.equals("DONE") && !status.equals("PENDING") ) {
             throw new InvalidTaskException("Incorrect status, have to be UNSTARTED, STARTED or DONE");
         }
     }
 
+<<<<<<< HEAD
     public Optional<Task> assignHelperToTask(Long id, Long usernumber) {
         Optional<Task> taskResult = taskRepository.findById(id);
         List<User> myList = userRepository.findByUserNumber(usernumber);
@@ -173,26 +170,35 @@ public final class TaskService {
 
         return taskResult;
     }
-
+=======
     //workItem status PENDING-STARTED valideringsmetod
-    public void checkStatus(Task oldTask, Task newTask) {
+    public void checkStatus(Task oldTask, Task newTask ){
         String oldStatus = oldTask.getStatus().toString();
         String newStatus = newTask.getStatus().toString();
 
-        if (oldStatus.equals("DONE")) {
-            if (newStatus.equals("PENDING")) {
+        if (oldStatus.equals("DONE")){
+            if(newStatus.equals("PENDING")){
                 throw new InvalidTaskException("Incorrect status, cannot change from DONE to PENDING");
             }
-        } else if (oldStatus.equals("PENDING")) {
-            if (newStatus.equals("DONE")) {
+        }
+        else if(oldStatus.equals("PENDING")){
+            if(newStatus.equals("DONE")){
                 throw new InvalidTaskException("Incorrect status, cannot change from PENDING to DONE");
-            } else if (newStatus.equals("UNSTARTED")) {
+            }
+            else if(newStatus.equals("UNSTARTED")){
                 throw new InvalidTaskException("Incorrect status, cannot change from PENDING to UNSTARTED");
             }
-        } else if (oldStatus.equals("UNSTARTED")) {
-            if (newStatus.equals("PENDING")) {
+        }
+        else if(oldStatus.equals("UNSTARTED")) {
+            if(newStatus.equals("PENDING")){
                 throw new InvalidTaskException("Incorrect status, cannot change from UNSTARTED to PENDING");
             }
         }
+
     }
+
+
+
+
+>>>>>>> features-nyStatus
 }

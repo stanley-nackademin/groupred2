@@ -4,5 +4,9 @@ public enum TaskStatus {
     UNSTARTED,
     STARTED,
     DONE,
+<<<<<<< HEAD
+    TEST;
+=======
     PENDING;
+>>>>>>> features-nyStatus
 }
