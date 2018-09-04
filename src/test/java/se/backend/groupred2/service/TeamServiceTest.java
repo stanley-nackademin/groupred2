@@ -35,6 +35,8 @@ public class TeamServiceTest {
 
     private ArrayList<User> usersForMaxUserLimitValidationTest = new ArrayList<>();
 
+    ArrayList<User> users = new ArrayList<>();
+
     @Before
     public void setUp() {
         //team for maxUserLimitValidationTest
@@ -45,13 +47,16 @@ public class TeamServiceTest {
         for (int i = 0; i < 10; i++) {
             usersForMaxUserLimitValidationTest.add(new User("usersForMaxUserLimitValidation", "firstName" + i, "username00" + i, true, 1000L + i));
         }
+
         for (User s : usersForMaxUserLimitValidationTest) {
             userService.createUser(s);
         }
+
         List<User> usersWithIdFromDatabase = userRepository.findUserByFirstName("usersForMaxUserLimitValidation");
         for (User s : usersWithIdFromDatabase) {
             teamService.addUser(fullTeam.getId(), s.getId());
         }
+
         User extraUserForMaxUserLimitValidationTest = new User("extraUser", "extraUser", "extraUser123", true, 2001L);
         userService.createUser(extraUserForMaxUserLimitValidationTest);
 
@@ -59,6 +64,7 @@ public class TeamServiceTest {
         teamService.createTeam(new Team("team1", true, 10));
         teamService.createTeam(new Team("team2", true, 10));
         teamService.createTeam(new Team("team3", true, 10));
+
         //The only way to get correct teamId is to get the teams from the database since they are now generated when created.
         Team team1 = teamRepository.findByName("team1").get();
         Team team2 = teamRepository.findByName("team2").get();

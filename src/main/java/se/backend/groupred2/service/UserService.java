@@ -107,6 +107,7 @@ public final class UserService {
                 List<User> user = repository.findUserByUserName(userName);
 
                 return user;
+
             } else if ((!firstName.equals("0"))) {
                 List<User> user = repository.findUserByFirstName(firstName);
 
@@ -152,5 +153,3 @@ public final class UserService {
         }
     }
 }
-
-

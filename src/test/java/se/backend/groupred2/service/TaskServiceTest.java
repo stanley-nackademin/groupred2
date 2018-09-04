@@ -38,10 +38,8 @@ public class TaskServiceTest {
 
     @Before
     public void setUp() {
-        //task = new Task("TaskTest", "test the createTask method", TaskStatus.UNSTARTED);
         taskRepository.save(task);
         userRepository.save(user);
-
     }
 
     @Test
