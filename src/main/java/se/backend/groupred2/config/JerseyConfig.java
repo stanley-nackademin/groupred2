@@ -9,6 +9,10 @@ import se.backend.groupred2.resource.IssueResource;
 import se.backend.groupred2.resource.TaskResource;
 import se.backend.groupred2.resource.TeamResource;
 import se.backend.groupred2.resource.UserResource;
+import se.backend.groupred2.resource.mapper.InvalidInputMapper;
+import se.backend.groupred2.resource.mapper.InvalidTaskMapper;
+import se.backend.groupred2.resource.mapper.InvalidTeamMapper;
+import se.backend.groupred2.resource.mapper.InvalidUserMapper;
 
 @Configuration
 public class JerseyConfig extends ResourceConfig {
@@ -18,6 +22,10 @@ public class JerseyConfig extends ResourceConfig {
         register(TaskResource.class);
         register(TeamResource.class);
         register(UserResource.class);
+        register(InvalidInputMapper.class);
+        register(InvalidTaskMapper.class);
+        register(InvalidTeamMapper.class);
+        register(InvalidUserMapper.class);
     }
 
     @Bean

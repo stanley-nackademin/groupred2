@@ -37,7 +37,6 @@ public final class UserService {
     }
 
     public Optional<User> update(Long id, User user) {
-        validate(user);
         Optional<User> result = repository.findById(id);
 
         if (result.isPresent()) {
