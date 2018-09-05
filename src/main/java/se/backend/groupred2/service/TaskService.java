@@ -144,7 +144,7 @@ public final class TaskService {
         }
     }
 
-    private void validateTask(Task task) {
+    protected void validateTask(Task task) {
         if (task.getTitle().isEmpty() || task.getTitle() == null || task.getDescription() == null || task.getStatus() == null) {
             throw new InvalidTaskException("Title, description and status have to have values. Can not leave empty");
         }

@@ -50,9 +50,18 @@ public class TaskServiceTest {
     Task taskPending;
     Task taskStarted;
     Task taskStarted1;
+    Task taskForCreateTaskTest;
+    private Task invalidTaskNull;
+    private Task invalidTask;
 
     @Before
     public void setUp() {
+        taskForCreateTaskTest = new Task("taskForCreateTaskTest", "test the createTask method", TaskStatus.UNSTARTED);
+        taskService.createTask(taskForCreateTaskTest);
+
+        invalidTaskNull = new Task("InvalidTask", "this task has invalid data", null);
+        invalidTask = new Task("InvalidTaskNotNull", "this task has invalid data that is not null", TaskStatus.TEST);
+
         taskRepository.save(task);
         userRepository.save(user);
 
@@ -80,6 +89,30 @@ public class TaskServiceTest {
     }
 
     @Test
+    public void createTaskTest() {
+        Optional<Task> result = taskRepository.findByTitle("taskForCreateTaskTest");
+        Task taskFromDatabase = result.get();
+        assertEquals(taskForCreateTaskTest.toString(), taskFromDatabase.toString());
+        assertEquals(taskForCreateTaskTest.getDescription(), taskFromDatabase.getDescription());
+        assertEquals(taskForCreateTaskTest.getTitle(), taskFromDatabase.getTitle());
+        assertEquals(taskForCreateTaskTest.getStatus(), taskFromDatabase.getStatus());
+    }
+
+    /*Test passes when InvalidTaskException is thrown
+     * which happens when TaskStatus = null*/
+    @Test(expected = InvalidTaskException.class)
+    public void createTaskTestInvalidData() {
+        taskService.validateTask(invalidTaskNull);
+    }
+
+    /*Test passes when InvalidTaskException is thrown
+     * which happens when TaskStatus has incorrect status type*/
+    @Test(expected = InvalidTaskException.class)
+    public void createTaskTestInvalidDataString() {
+        taskService.validateStatus(invalidTask.getStatus().name());
+    }
+
+        @Test
     public void assignHelperToTaskTest() throws Exception {
         Optional<Task> u = taskService.assignHelperToTask(task.getId(), user.getUserNumber());
 
@@ -141,9 +174,9 @@ public class TaskServiceTest {
         taskRepository.delete(task);
         userRepository.delete(user);
 
+        taskRepository.delete(taskRepository.findByTitle("taskForCreateTaskTest").get());
         taskRepository.delete(testTask);
         userRepository.delete(inactiveUser);
-
 
         for(Task t : taskList){
             taskRepository.delete(t);
