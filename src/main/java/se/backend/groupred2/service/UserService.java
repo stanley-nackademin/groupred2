@@ -13,6 +13,7 @@ import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -55,6 +56,10 @@ public final class UserService {
             }
 
             if (user.getUserNumber() != null) {
+                List<User> users = repository.findAll().stream().filter(u -> u.getUserNumber().equals(user.getUserNumber())).collect(Collectors.toList());
+                if(!users.isEmpty()){
+                        throw new InvalidUserException("UserNumber is already in use");
+                }
                 updatedUser.setUserNumber(user.getUserNumber());
             }
 
@@ -144,6 +149,12 @@ public final class UserService {
     }
 
     public void validate(User user) {
+
+        List<User> result = repository.findAll().stream().filter(u -> u.getUserNumber().equals(user.getUserNumber())).collect(Collectors.toList());
+        if(!result.isEmpty()){
+            throw new InvalidUserException("UserNumber is already in use");
+        }
+
         int UserName = user.getUserName().length();
         if (UserName < 10) {
             throw new InvalidUserException("UserName must be atleast 10 characters");

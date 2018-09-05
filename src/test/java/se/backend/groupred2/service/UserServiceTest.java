@@ -106,9 +106,9 @@ public class UserServiceTest {
     }
 
     @Test
-    public void updateUserWithValidInputTest(){
+    public void updateUserWithValidInputTest() {
         User updatedUser = new User("fname", "lname", "someusername", false, testUser.getUserNumber());
-
+        updatedUser.setUserNumber(updatedUser.getUserNumber()+5000);
         userService.update(testUser.getId(), updatedUser);
 
         User checkUser = userRepository.findById(testUser.getId()).get();
@@ -133,11 +133,12 @@ public class UserServiceTest {
         userService.update(testUser.getId(), updatedUser);
     }
 
-    @Test
+    @Test(expected = InvalidUserException.class)
     public void shouldChangeValidUsername() {
         String oldUsername = activatedUser.getUserName();
         String newUsername = "ThisIsSomeNewUsername";
         activatedUser.setUserName(newUsername);
+        activatedUser.setId(activatedUser.getId());
         userService.update(activatedUser.getId(), activatedUser);
 
         testUser = userRepository.findById(activatedUser.getId()).get();
