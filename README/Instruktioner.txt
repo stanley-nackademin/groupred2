@@ -1,0 +1,35 @@
+### Projektet ###
+
+Ladda ner projektet från: https://github.com/RichardHags/backendRed2
+Eller packa upp medföljande projekt från groupred2.zip filen.
+
+### Installation ### 
+
+* Packa upp groupred2.zip filen (eller ladda ner) projektet till önskad mapp.
+* Skapa en databas i MySQL som heter groupred, fler instruktioner om users etc kommer nedanför.
+* I application.properties kommer ni behöva ändra username och password till vad ni använder i MySQL.
+
+För att få alla postman collections:
+Längst upp till vänster i postman finns en "import" knapp. Tryck på den och sedan "import from link". Använd sedan denna link:
+https://www.getpostman.com/collections/1a37f4dadb0145b22d99
+(Om den inte fungerar så kontakta oss. Kan vara så att den slutar fungera efter en viss tidsperiod).
+
+### Versioner ###
+
+* Spring Boot baserad applikation skriven i Java**  
+* Jersey 2.27 för Rest
+* MySQL 5.7.21
+* MySQL Workbench 6.3.10
+* Postman 6.1.2
+* Java 8
+
+### MySQL ###
+
+* Databasen töms varje gång ni startar om programmet, ni kan ändra det i application.properties
+
+### Instruktion för testfallen ###
+
+Alla JUnit tester kan köras via RunAllTests-klassen, alternativt kan ni köra alla JUnit-tester separat via respektive testklasser.
+
+Ni kan hitta alla tester i dokumentet Test.pdf, dem är indelade i valid data och invalid data för varje testfall.
+Testfallen finns i Testfallen.pdf

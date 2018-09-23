@@ -70,8 +70,8 @@ public class TaskServiceTest {
         activeUser2 = userService.createUser(new User("fname", "lname", "newCrappyUsername", true, 1001L));
         inactiveUser = userService.createUser(new User("somefn", "someln", "somenewUsername", false, 1002L));
 
-        for(int i=0; i<6; i++){
-            Task task = taskService.createTask(new Task("task"+i, "title"+i, TaskStatus.UNSTARTED));
+        for (int i = 0; i < 6; i++) {
+            Task task = taskService.createTask(new Task("task" + i, "title" + i, TaskStatus.UNSTARTED));
             taskList.add(task);
         }
 
@@ -112,7 +112,7 @@ public class TaskServiceTest {
         taskService.validateStatus(invalidTask.getStatus().name());
     }
 
-        @Test
+    @Test
     public void assignHelperToTaskTest() throws Exception {
         Optional<Task> u = taskService.assignHelperToTask(task.getId(), user.getUserNumber());
 
@@ -125,28 +125,28 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void assignValidTaskToValidUserTest(){
+    public void assignValidTaskToValidUserTest() {
         taskService.assignTaskToUser(testTask.getId(), activeUser1.getId());
 
         assertEquals(taskService.getTask(testTask.getId()).get().getUser().getId(), activeUser1.getId());
         assertNotEquals(taskService.getTask(testTask.getId()).get().getUser().getId(), activeUser2.getId());
     }
 
-    @Test (expected = InvalidTaskException.class)
-    public void assignValidTaskToInactiveUserTest(){
+    @Test(expected = InvalidTaskException.class)
+    public void assignValidTaskToInactiveUserTest() {
         taskService.assignTaskToUser(testTask.getId(), inactiveUser.getId());
     }
 
-    @Test (expected = InvalidTaskException.class)
-    public void assignValidTaskToUserWith5TasksTest(){
+    @Test(expected = InvalidTaskException.class)
+    public void assignValidTaskToUserWith5TasksTest() {
 
-        for(int i=0; i<taskList.size(); i++){
+        for (int i = 0; i < taskList.size(); i++) {
             taskService.assignTaskToUser(taskList.get(i).getId(), activeUser2.getId());
         }
     }
 
     @Test(expected = InvalidTaskException.class)
-    public void InvalidTaskUpdateStatusfromAndToPendingTest(){
+    public void InvalidTaskUpdateStatusfromAndToPendingTest() {
         taskService.checkStatus(taskDone, taskPending);
         taskService.checkStatus(taskPending, taskDone);
         taskService.checkStatus(taskPending, taskUnstarted);
@@ -155,7 +155,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void validTaskUpdateStatusFromAndToPendingTest(){
+    public void validTaskUpdateStatusFromAndToPendingTest() {
         Long startedID = taskRepository.findAllByStatus(Enum.valueOf(TaskStatus.class, "STARTED")).get(0).getId();
         Long started1ID = taskRepository.findAllByStatus(Enum.valueOf(TaskStatus.class, "STARTED")).get(1).getId();
         Long pendingID = taskRepository.findAllByStatus(Enum.valueOf(TaskStatus.class, "PENDING")).get(0).getId();
@@ -178,7 +178,7 @@ public class TaskServiceTest {
         taskRepository.delete(testTask);
         userRepository.delete(inactiveUser);
 
-        for(Task t : taskList){
+        for (Task t : taskList) {
             taskRepository.delete(t);
         }
 

@@ -7,11 +7,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import se.backend.groupred2.model.Task;
-import se.backend.groupred2.model.TaskStatus;
 import se.backend.groupred2.model.Team;
 import se.backend.groupred2.model.User;
-import se.backend.groupred2.repository.TaskRepository;
 import se.backend.groupred2.repository.TeamRepository;
 import se.backend.groupred2.repository.UserRepository;
 import se.backend.groupred2.service.exceptions.InvalidTeamException;
@@ -19,7 +16,6 @@ import se.backend.groupred2.service.exceptions.InvalidUserException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -53,26 +49,26 @@ public class UserServiceTest {
         teamForGetAllUsersByTeamIdTest = new Team("teamForGetAllUsersByTeamIdTest", true, 10);
         teamService.createTeam(teamForGetAllUsersByTeamIdTest);
 
-        for (int i = 0; i < 5; i++){
-            userService.createUser(new User("userForGetAllUserByTeamId", "lastName"+i, "username12346"+i, true, 2000L+i));
-            User user = new User("userForGetAllUserByTeamId", "lastName"+i, "username12346"+i, true, 2000L+i);
-            user.setId(i+1L);
+        for (int i = 0; i < 5; i++) {
+            userService.createUser(new User("userForGetAllUserByTeamId", "lastName" + i, "username12346" + i, true, 2000L + i));
+            User user = new User("userForGetAllUserByTeamId", "lastName" + i, "username12346" + i, true, 2000L + i);
+            user.setId(i + 1L);
             localUsersToMatchFromRepo.add(user);
         }
 
         List<User> usersWithId = userRepository.findUserByFirstName("userForGetAllUserByTeamId");
         Team teamWithId = teamRepository.findByName("teamForGetAllUsersByTeamIdTest").get();
-        for (User s: usersWithId) {
+        for (User s : usersWithId) {
             teamService.addUser(teamWithId.getId(), s.getId());
         }
 
         userRepository.save(user);
         userRepository.save(badUser);
 
-        for (int i = 0; i < 5; i++){
-            users.add(new User("activeUser"+i, "firstName"+i, "lastName"+i, true, 1000L+i));
+        for (int i = 0; i < 5; i++) {
+            users.add(new User("activeUser" + i, "firstName" + i, "lastName" + i, true, 1000L + i));
         }
-        for (User s: users) {
+        for (User s : users) {
             userRepository.save(s);
         }
 
@@ -84,7 +80,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getAllUserByteamIdTest(){
+    public void getAllUserByteamIdTest() {
         Team team = teamService.getTeam(teamRepository.findByName("teamForGetAllUsersByTeamIdTest").get().getId());
         List<User> usersFromRepo = userService.getAllUserByteamId(team.getId());
         assertEquals(usersFromRepo.get(1).toString(), localUsersToMatchFromRepo.get(1).toString());
@@ -108,7 +104,7 @@ public class UserServiceTest {
     @Test
     public void updateUserWithValidInputTest() {
         User updatedUser = new User("fname", "lname", "someusername", false, testUser.getUserNumber());
-        updatedUser.setUserNumber(updatedUser.getUserNumber()+5000);
+        updatedUser.setUserNumber(updatedUser.getUserNumber() + 5000);
         userService.update(testUser.getId(), updatedUser);
 
         User checkUser = userRepository.findById(testUser.getId()).get();
@@ -126,8 +122,8 @@ public class UserServiceTest {
         assertNotEquals(checkUser.getIsActive(), testUser.getIsActive());
     }
 
-    @Test (expected = InvalidUserException.class)
-    public void updateUserWithInvalidInputTest(){
+    @Test(expected = InvalidUserException.class)
+    public void updateUserWithInvalidInputTest() {
         User updatedUser = new User("fn", "ln", "uname", false, testUser.getUserNumber());
 
         userService.update(testUser.getId(), updatedUser);
@@ -155,14 +151,14 @@ public class UserServiceTest {
     }
 
     @Test
-    public void inactivateUserTest(){
+    public void inactivateUserTest() {
         Long activeId = userRepository.findUserByFirstName("activatedUser").get(0).getId();
         assertTrue(userService.deActivate(activeId).isPresent());
         assertFalse(userService.deActivate(9893L).isPresent());
     }
 
     @Test(expected = InvalidTeamException.class)
-    public  void inactivateUserThatIsAlreadyInactiveTest(){
+    public void inactivateUserThatIsAlreadyInactiveTest() {
         User user = userRepository.findUserByFirstName("deActivatedUser").get(0);
         userService.checkIfActive(user);
 
@@ -172,7 +168,7 @@ public class UserServiceTest {
     public void tearDown() {
 
         List<User> userForGetAllUserByTeamId = userRepository.findUserByFirstName("userForGetAllUserByTeamId");
-        for (User s: userForGetAllUserByTeamId) {
+        for (User s : userForGetAllUserByTeamId) {
             userRepository.delete(s);
         }
 
@@ -180,7 +176,7 @@ public class UserServiceTest {
         Team teamForGetAllUsersByTeamIdTest = teamRepository.findByName("teamForGetAllUsersByTeamIdTest").get();
         teamRepository.delete(teamForGetAllUsersByTeamIdTest);
 
-        for (User s: users) {
+        for (User s : users) {
             userRepository.delete(s);
         }
 

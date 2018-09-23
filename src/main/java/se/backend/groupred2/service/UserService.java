@@ -57,8 +57,8 @@ public final class UserService {
 
             if (user.getUserNumber() != null) {
                 List<User> users = repository.findAll().stream().filter(u -> u.getUserNumber().equals(user.getUserNumber())).collect(Collectors.toList());
-                if(!users.isEmpty()){
-                        throw new InvalidUserException("UserNumber is already in use");
+                if (!users.isEmpty()) {
+                    throw new InvalidUserException("UserNumber is already in use");
                 }
                 updatedUser.setUserNumber(user.getUserNumber());
             }
@@ -151,7 +151,7 @@ public final class UserService {
     public void validate(User user) {
 
         List<User> result = repository.findAll().stream().filter(u -> u.getUserNumber().equals(user.getUserNumber())).collect(Collectors.toList());
-        if(!result.isEmpty()){
+        if (!result.isEmpty()) {
             throw new InvalidUserException("UserNumber is already in use");
         }
 
